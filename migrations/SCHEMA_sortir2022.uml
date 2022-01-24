@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>f8498902-50d4-46b6-af28-795459e1c471.SCHEMA:sortir2022</OriginalElement>
+  <nodes>
+    <node x="212.0" y="291.0">f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.campus</node>
+    <node x="549.5" y="34.0">f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.etat</node>
+    <node x="199.5" y="191.0">f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.participant_sortie</node>
+    <node x="565.75" y="165.0">f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.sortie</node>
+    <node x="282.75" y="573.0">f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.ville</node>
+    <node x="-147.0" y="191.0">f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.participant</node>
+    <node x="589.5" y="532.0">f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.lieu</node>
+    <node x="-136.0" y="28.0">f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.doctrine_migration_versions</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.sortie" target="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.participant" relationship="REFERENCES">
+      <point x="-104.0" y="83.0" />
+      <point x="83.0" y="46.0" />
+    </edge>
+    <edge source="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.sortie" target="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.lieu" relationship="REFERENCES">
+      <point x="-17.25" y="137.5" />
+      <point x="0.0" y="-82.5" />
+    </edge>
+    <edge source="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.lieu" target="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.ville" relationship="REFERENCES">
+      <point x="-63.0" y="8.0" />
+      <point x="77.0" y="0.0" />
+    </edge>
+    <edge source="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.participant" target="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.campus" relationship="REFERENCES">
+      <point x="83.0" y="-10.0" />
+      <point x="-63.0" y="0.0" />
+    </edge>
+    <edge source="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.participant_sortie" target="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.participant" relationship="REFERENCES">
+      <point x="-75.5" y="0.0" />
+      <point x="83.0" y="-110.5" />
+    </edge>
+    <edge source="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.sortie" target="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.etat" relationship="REFERENCES">
+      <point x="-56.25" y="-137.5" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.participant_sortie" target="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.sortie" relationship="REFERENCES">
+      <point x="75.5" y="0.0" />
+      <point x="-104.0" y="-73.5" />
+    </edge>
+    <edge source="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.sortie" target="f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.campus" relationship="REFERENCES">
+      <point x="-104.0" y="27.0" />
+      <point x="63.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="false" x="313.5" y="362.5" />
+  <SelectedNodes>
+    <node>f8498902-50d4-46b6-af28-795459e1c471.TABLE:sortir2022.etat</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

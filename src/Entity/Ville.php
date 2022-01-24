@@ -31,7 +31,7 @@ class Ville implements \JsonSerializable  //le implements \JsonSerializable perm
      */
     public function __toString()
     {
-        return $this->nom . " " . $this->codePostal;
+        return $this->codePostal. " " .$this->nom;
     }
 
     /**
@@ -51,15 +51,17 @@ class Ville implements \JsonSerializable  //le implements \JsonSerializable perm
      */
     private $codePostal;
 
-
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Lieu", mappedBy="ville")
+     * @ORM\OneToMany(targetEntity=Lieu::class, mappedBy="ville", orphanRemoval=true)
      */
-    private $lieux;
+    private $lieus;
+
+
+
 
     public function __construct()
     {
-        $this->lieux = new ArrayCollection();
+        $this->lieus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,20 +93,18 @@ class Ville implements \JsonSerializable  //le implements \JsonSerializable perm
         return $this;
     }
 
-
-
     /**
      * @return Collection|Lieu[]
      */
-    public function getLieux(): Collection
+    public function getLieus(): Collection
     {
-        return $this->lieux;
+        return $this->lieus;
     }
 
     public function addLieu(Lieu $lieu): self
     {
-        if (!$this->lieux->contains($lieu)) {
-            $this->lieux[] = $lieu;
+        if (!$this->lieus->contains($lieu)) {
+            $this->lieus[] = $lieu;
             $lieu->setVille($this);
         }
 
@@ -113,8 +113,7 @@ class Ville implements \JsonSerializable  //le implements \JsonSerializable perm
 
     public function removeLieu(Lieu $lieu): self
     {
-        if ($this->lieux->contains($lieu)) {
-            $this->lieux->removeElement($lieu);
+        if ($this->lieus->removeElement($lieu)) {
             // set the owning side to null (unless already changed)
             if ($lieu->getVille() === $this) {
                 $lieu->setVille(null);
@@ -123,4 +122,7 @@ class Ville implements \JsonSerializable  //le implements \JsonSerializable perm
 
         return $this;
     }
+
+
+
 }

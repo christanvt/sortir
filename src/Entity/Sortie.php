@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=SortieRepository::class)
@@ -25,33 +28,63 @@ class Sortie
     /**
      * @ORM\Column(type="datetime")
      */
-    private $dateHeureDebut;
+    private ?\DateTimeInterface $dateHeureDebut;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $duree;
+    private ?int $duree;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $dateLimiteInscription;
+    private ?\DateTimeInterface $dateLimiteInscription;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $nbInscriptionsMax;
+    private ?int $nbInscriptionsMax;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $infosSortie;
+    private ?string $infosSortie;
 
     /**
      * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $etat;
+    private ?Etat $etat;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Participant::class, inversedBy="organisteurDesSorties")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?Participant $organisateur;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Participant::class, mappedBy="inscritAuxSorties")
+     */
+    private ArrayCollection $participants;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Lieu::class, inversedBy="sorties")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?Lieu $lieu;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="sorties")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $campus;
+
+
+
+    public function __construct()
+    {
+        $this->participants = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -141,4 +174,68 @@ class Sortie
 
         return $this;
     }
+
+    public function getOrganisateur(): ?Participant
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Participant $organisateur): self
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Participant[]
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(Participant $participant): self
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants[] = $participant;
+            $participant->addSorty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Participant $participant): self
+    {
+        if ($this->participants->removeElement($participant)) {
+            $participant->removeSorty($this);
+        }
+
+        return $this;
+    }
+
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): self
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): self
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
 }
