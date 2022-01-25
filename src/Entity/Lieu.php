@@ -50,7 +50,7 @@ class Lieu implements \JsonSerializable //comment doit-être convertie cette cla
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Merci de saisir votre rue.")
+     * @Assert\NotBlank(message="Merci de saisir la rue associée.")
      * @Assert\Length(max=255, maxMessage="La rue ne peut pas excéder 255 caractères.")
      */
     private $rue;

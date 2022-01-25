@@ -58,19 +58,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotBlank()
      */
     private $administrateur;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotBlank()
      */
     private $actif;
 
     /**
      * @ORM\Column(type="string", length=50, unique=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Merci de saisir votre pseudo.")
      * @Assert\Regex(pattern="/^[a-zA-Z0-9_-]+$/",
      *     message="Lettres sans accents, nombres, - et _ acceptés.")
      * @Assert\Length(max=50, maxMessage="Le pseudo ne peut pas excéder 50 caractères.")
