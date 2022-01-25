@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -43,11 +44,15 @@ class Ville implements \JsonSerializable  //le implements \JsonSerializable perm
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank(message="Merci de saisir la ville de la sortie.")
+     * @Assert\Length(max=100, maxMessage="Le nom ne peut pas excéder 100 caractères.")
      */
     private $nom;
     
     /**
-     * @ORM\Column(type="string", length=3)
+     * @ORM\Column(type="string", length=5)
+     * @Assert\NotBlank("Merci de renseigner le code postal.")
+     * @Assert\Length(max=5, maxMessage="Le code postal ne peut pas excéder 5 caractères.")
      */
     private $codePostal;
 

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=SortieRepository::class)
@@ -22,26 +23,33 @@ class Sortie
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank("Merci de renseigner le nom de votre sortie.)
+     * @Assert\Length(max=255, maxMessage="Le nom ne peut pas excéder 255 caractères.")
      */
     private $nom;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotBlank(message="Merci de choisir une date pour votre sortie.")
      */
     private ?\DateTimeInterface $dateHeureDebut;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message="Merci de renseigner une durée en minutes.")
+     * @Assert\GreaterThan(0)
      */
     private ?int $duree;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotBlank(message="Merci de choisir une date limite d'inscription.")
      */
     private ?\DateTimeInterface $dateLimiteInscription;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message="Merci d'indiquer le nombre maximal d'inscrits.")
      */
     private ?int $nbInscriptionsMax;
 

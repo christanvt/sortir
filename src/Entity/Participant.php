@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
@@ -35,37 +36,51 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Assert\NotBlank(message="Merci de saisir votre nom.")
+     * @Assert\Length(max=30, maxMessage="Le nom ne peut pas excéder 30 caractères.")
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Assert\NotBlank(message="Merci de saisir votre prénom.")
+     * @Assert\Length(max=30, maxMessage="Le prénom ne peut pas excéder 30 caractères.")
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=30, nullable=true)
+     * @Assert\NotBlank(message="Merci de saisir votre numéro de téléphone.")
+     * @Assert\Regex("/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/")
+     * @Assert\Length(max=30, maxMessage="Le téléphone ne peut pas excéder 30 chiffres.")
      */
     private $telephone;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotBlank()
      */
     private $administrateur;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotBlank()
      */
     private $actif;
 
     /**
      * @ORM\Column(type="string", length=50, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Regex(pattern="/^[a-zA-Z0-9_-]+$/",
+     *     message="Lettres sans accents, nombres, - et _ acceptés.")
+     * @Assert\Length(max=50, maxMessage="Le pseudo ne peut pas excéder 50 caractères.")
      */
     private $pseudo;
 
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="Le chemin d'accès à l'image est trop long (255 caractères max).")
      */
     private ?string $imagePath;
 

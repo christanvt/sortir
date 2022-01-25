@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LieuRepository")
@@ -42,11 +43,15 @@ class Lieu implements \JsonSerializable //comment doit-être convertie cette cla
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank(message="Merci de saisir le nom du lieu de la sortie.")
+     * @Assert\Length(max=100, maxMessage="Le nom ne peut pas excéder 100 caractères.")
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Merci de saisir votre rue.")
+     * @Assert\Length(max=255, maxMessage="La rue ne peut pas excéder 255 caractères.")
      */
     private $rue;
 
