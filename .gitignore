@@ -4,6 +4,7 @@
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
+/config/packages/doctrine_migrations.yaml
 /public/bundles/
 /var/
 /vendor/
@@ -19,4 +20,3 @@
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 
-/config/packages/doctrine_migrations.yaml
