@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\ParticipantRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
@@ -22,6 +24,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id;
 
     /**
+     * @Assert\NotBlank
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private ?string $email;
