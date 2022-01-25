@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  *
  *
- * @ORM\Entity(repositoryClass="VilleRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\VilleRepository")
  */
 class Ville implements \JsonSerializable  //le implements \JsonSerializable permet de définir les données restituées si on json_encode une entité de cette classe
 {
@@ -51,7 +51,7 @@ class Ville implements \JsonSerializable  //le implements \JsonSerializable perm
     
     /**
      * @ORM\Column(type="string", length=5)
-     * @Assert\NotBlank("Merci de renseigner le code postal.")
+     * @Assert\NotBlank(message="Merci de renseigner le code postal.")
      * @Assert\Length(max=5, maxMessage="Le code postal ne peut pas excéder 5 caractères.")
      */
     private $codePostal;

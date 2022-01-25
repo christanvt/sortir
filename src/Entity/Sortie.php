@@ -22,7 +22,7 @@ class Sortie
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank("Merci de renseigner le nom de votre sortie.")
+     * @Assert\NotBlank(message="Merci de renseigner le nom de votre sortie.")
      * @Assert\Length(max=255, maxMessage="Le nom ne peut pas excéder 255 caractères.")
      */
     private $nom;
@@ -36,7 +36,7 @@ class Sortie
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank(message="Merci de renseigner une durée en minutes.")
-     * @Assert\GreaterThan(0)
+     * @Assert\GreaterThanOrEqual(0)
      */
     private ?int $duree;
 
@@ -48,6 +48,7 @@ class Sortie
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(0)
      * @Assert\NotBlank(message="Merci d'indiquer le nombre maximal d'inscrits.")
      */
     private ?int $nbInscriptionsMax;
