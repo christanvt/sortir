@@ -132,6 +132,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
+    public function getUser(): UserInterface
+    {
+        return $this;
+    }
+
     /**
      * @deprecated since Symfony 5.3, use getUserIdentifier instead
      */
