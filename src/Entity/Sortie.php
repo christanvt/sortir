@@ -54,7 +54,7 @@ class Sortie
      * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Etat $etat;
+    private Etat $etat;
 
     /**
      * @ORM\ManyToOne(targetEntity=Participant::class, inversedBy="organisteurDesSorties")

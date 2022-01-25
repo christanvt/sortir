@@ -31,7 +31,7 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        $user->setPassword($newHashedPassword);
+        $user->setMotpasse($newHashedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
     }

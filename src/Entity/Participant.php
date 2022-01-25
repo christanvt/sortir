@@ -26,16 +26,12 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private ?string $email;
 
-    /**
-     * @ORM\Column(type="json")
-     */
-    private array $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private string $password;
+    private string $motpasse;
 
     /**
      * @ORM\Column(type="string", length=30)
@@ -130,22 +126,14 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
-
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
+    public function getMotpasse(): string
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return $this->motpasse;
     }
 
-    public function setRoles(array $roles): self
+    public function setMotpasse(string $motpasse): self
     {
-        $this->roles = $roles;
+        $this->motpasse = $motpasse;
 
         return $this;
     }
@@ -155,14 +143,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
+        return $this->motpasse;
     }
 
     /**
@@ -333,5 +314,10 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         $this->campus = $campus;
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->administrateur ? ['ROLE_ADMIN'] : ['ROLE_USER'];
     }
 }
