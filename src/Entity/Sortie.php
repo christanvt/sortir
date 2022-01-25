@@ -115,6 +115,26 @@ class Sortie
         return $this;
     }
 
+    /**
+     * Calcule la date de fin de la sortie en fonction de sa durée
+     *
+     * @return \DateTime
+     * @throws \Exception
+     */
+    public function getDateHeureFin(): \DateTimeInterface
+    {
+        $endDate = clone $this->getDateHeureDebut();
+
+        if ($this->getDuree()){
+            $durationInterval = new \DateInterval("PT".$this->getDuree()."H");
+            $endDate = $endDate->add($durationInterval);
+        }
+        else {
+            $endDate->setTime(23, 59, 59);
+        }
+        return $endDate;
+    }
+
     public function getDuree(): ?int
     {
         return $this->duree;
