@@ -44,7 +44,7 @@ class Campus
         $this->membres = new ArrayCollection();
         $this->sorties = new ArrayCollection();
     }
-    
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +121,8 @@ class Campus
 
         return $this;
     }
-
-
+    public function __toString()
+    {
+        return $this->nom;
+    }
 }
