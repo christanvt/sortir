@@ -16,13 +16,13 @@ class AppFixtures extends Fixture
     public function loadEtat(): void
     {
         $etatNomsArray = [
-            'Créee',
-            'Ouverte',
-            'Clôturée',
-            "Activité en cour",
-            'Passée',
-            'Annulée',
-            'Historisée',
+            'CREEE',
+            'OUVERTE',
+            'CLOTUREE',
+            'ACTIVITE_EN_COURS',
+            'PASSEE',
+            'ANNULEE',
+            'ARCHIVEE',
         ];
         for ($i = 0; $i < count($etatNomsArray); $i++) {
             $nom = $etatNomsArray[$i];
