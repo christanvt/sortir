@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Form\LieuType;
 use App\Form\SortieSearchType;
 use App\Form\SortieType;
 use App\Helper\EtatChangeHelper;
@@ -75,7 +76,11 @@ class SortieController extends AbstractController
 
         // heures par défaut
         $sortie->setDateHeureDebut((new \DateTimeImmutable())->setTime(17, 0));
-        $sortie->setDateLimiteInscription($sortie->setDateHeureDebut()->sub(new \DateInterval("PT1H")));
+        // https://en.wikipedia.org/wiki/ISO_8601#Durations
+        // To resolve ambiguity, "P1M" is a one-month duration and "PT1M" is a one-minute duration
+        // (note the time designator, T, that precedes the time value).
+        // PnYnMnDTnHnMnS
+        $sortie->setDateLimiteInscription($sortie->getDateHeureDebut()->sub(new \DateInterval("PT1H")));
 
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
@@ -97,22 +102,22 @@ class SortieController extends AbstractController
             }
             */
 
-            $this->addFlash('success', 'Sortie créée, bravo !');
-            return $this->redirectToRoute('event_detail', ['id' => $sortie->getId()]);
+            $this->addFlash('success', 'Vous venez de créée une sortie !');
+            return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
         }
 
         //formulaire de lieu, pas traité ici ! Il est en effet soumis en ajax, vers une autre route
-        $locationForm = $this->createForm(LocationType::class);
+        $lieuForm = $this->createForm(LieuType::class);
 
         //on passe les 2 forms pour affichage
-        return $this->render('sortie/create.html.twig', [
+        return $this->render('sortie/new.html.twig', [
             'sortieForm' => $sortieForm->createView(),
-            'locationForm' => $locationForm->createView()
+            'lieuForm' => $lieuForm->createView()
         ]);
     }
 
     /**
-     * @Route("/{id}", name="sortie_show", methods={"GET"})
+     * @Route("/{id}", name="show", methods={"GET"})
      */
     public function show(Sortie $sortie): Response
     {
@@ -122,7 +127,7 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="sortie_edit", methods={"GET", "POST"})
+     * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
     public function edit(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
@@ -142,7 +147,7 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="sortie_delete", methods={"POST"})
+     * @Route("/{id}", name="delete", methods={"POST"})
      */
     public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
