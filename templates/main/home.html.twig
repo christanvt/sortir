@@ -1,9 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<h1>Salut les gens !</h1>
-{% endblock %}
+	<h1>Salut
+		{% if app.user %}
+			{{app.user.pseudo}}
+		{% else %}
+			les gens
+		{% endif %}
+		!</h1>
 
+
+{% endblock %}
 {% block title %}
 	{{ parent() }}
 	| Home
