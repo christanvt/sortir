@@ -30,9 +30,19 @@
 				<li class="nav-item">
 					<a class="nav-link" title="Tout les états" href="{{ path('etat_index') }}">Etats</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" title="Login" href="{{ path('app_login') }}">Login</a>
-				</li>
+				{% if app.user %}
+					<li class="nav-item">
+						<a class="nav-link disabled" title="Login" href="{{ path('app_logout') }}" style="color:red;">Connecté en tant que
+							{{app.user.pseudo}}</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" title="Login" href="{{ path('app_logout') }}">Se déconnecter</a>
+					</li>
+				{% else %}
+					<li class="nav-item">
+						<a class="nav-link" title="Login" href="{{ path('app_login') }}">Login</a>
+					</li>
+				{% endif %}
 			</ul>
 		</div>
 	</div>
