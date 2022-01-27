@@ -61,14 +61,14 @@
                             <a class="btn btn-warning" href="#">Modifier</a>
                         {% endif %}
                         {% if sortie.etat.libelle == 'open' or sortie.etat.libelle == 'closed' %}
-                            <a class="btn btn-danger" href="{{ path('sortie_cancel', {'id': sortie.id}) }}">Annuler</a>
+                            <a class="btn btn-danger" href="{{ path('sortie_annuler', {'id': sortie.id}) }}">Annuler</a>
                         {% endif %}
                     {% endif %}
 
                     <p>
                     Organisée par
                     {% if sortie.organisateur.actif %}
-                        <a href="{{ path('participant_edit', {id: sortie.organisateur.id}) }}" title="Voir son profil">{{ sortie.organisateur.nom ~ " " ~ sortie.organisateur.prenom|first }}.</a>
+                        <a href="{{ path('participant_show', {id: sortie.organisateur.id}) }}" title="Voir son profil">{{ sortie.organisateur.nom ~ " " ~ sortie.organisateur.prenom|first }}.</a>
                     {% else %}
                         l'utilisateur a été supprimé ou banni
                     {% endif %}
@@ -92,7 +92,7 @@
                 <summary>{{ sortie.participants|length }} personnes inscrites !</summary>
                 <ul>
                     {% for p in sortie.participants %}
-                        <li><a href="{{ path('participant_edit', {id: p.user.id}) }}">{{ p.user.nom }} {{ p.user.prenom }}</a></li>
+                        <li><a href="{{ path('participant_show', {id: p.user.id}) }}">{{ p.user.nom }} {{ p.user.prenom }}</a></li>
                     {% endfor %}
                 </ul>
             </details>
