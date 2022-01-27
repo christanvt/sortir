@@ -5,7 +5,10 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-/public/img/profils/*.*
+/public/img/profils/*.jpeg
+/public/img/profils/*.jpg
+/public/img/profils/*.png
+
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
