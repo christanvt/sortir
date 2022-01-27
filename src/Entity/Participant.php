@@ -28,7 +28,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id;
 
     /**
-     * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $filename;

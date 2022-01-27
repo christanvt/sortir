@@ -88,7 +88,7 @@ class ParticipantController extends AbstractController
      */
     public function delete(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$participant->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $participant->getId(), $request->request->get('_token'))) {
             $entityManager->remove($participant);
             $entityManager->flush();
         }
@@ -106,7 +106,7 @@ class ParticipantController extends AbstractController
         $participantRepo = $em->getRepository(Participant::class);
 
         //la sortie doit être dans l'état ouverte pour qu'on puisse s'y inscrire
-        if ($sortie->getEtat()->getLibelle() !== EtatChangeHelper::ETAT_OUVERTE){
+        if ($sortie->getEtat()->getLibelle() !== EtatChangeHelper::ETAT_OUVERTE) {
             $this->addFlash("danger", "Cette sortie n'est pas ouverte aux inscriptions !");
             return $this->redirectToRoute('sortie_detail', ["id" => $sortie->getId()]);
         }
@@ -114,9 +114,12 @@ class ParticipantController extends AbstractController
         //désincription si on trouve cette inscription
         //on la recherche dans la bdd du coup...
         $foundParticipant = $participantRepo->findOneBy(
-                                        ['id' => $this->getUser()->getId(),
-                                        'inscritAuxSorties' => $sortie]);
-        if ($foundParticipant){
+            [
+                'id' => $this->getUser()->getId(),
+                'inscritAuxSorties' => $sortie
+            ]
+        );
+        if ($foundParticipant) {
             //supprime l'inscription
             $em->remove($foundParticipant);
             $em->flush();
@@ -128,7 +131,7 @@ class ParticipantController extends AbstractController
         //sinon,
         // si on ne l'a pas trouvée dans la DB, alors on s'inscrit
         // la sortie est-elle complète ?
-        if ($sortie->isFull()){
+        if ($sortie->isFull()) {
             $this->addFlash("danger", "Cette sortie est complète !");
             return $this->redirectToRoute('sortie_detail', ["id" => $sortie->getId()]);
         }
@@ -143,7 +146,7 @@ class ParticipantController extends AbstractController
         $em->refresh($sortie);
 
         //maintenant,si c'est complet pour changer son état
-        if ($sortie->isFull()){
+        if ($sortie->isFull()) {
             $etatChangeHelper->changeEtatSortie($sortie, EtatChangeHelper::ETAT_CLOTUREE);
         }
 
