@@ -15,7 +15,9 @@
     <div>
         {{ form_label(sortieForm.lieu) }}
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lieuModal">Choisir</button>
+        <button type="button" class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#lieuModal">Créer un nouveau</button>
     </div>
     {{ form_widget(sortieForm.lieu) }}
     {{ form_errors(sortieForm.lieu) }}
@@ -97,18 +99,21 @@
             //récupère la valeur tapée
             let zip = $("#lieu_codePostal").val();
 
-            if (zip.length < 5){
+            if (zip.length < 5 && zip.length != 0){
                 return;
             }
-
+            if (zip.length == 0){
+                zip = '0';
+            }
             //j'envoie les données au serveur en ajax
             $.ajax({
+
                 //ne marche que parce que je ne suis pas dans un fichier js externe
                 //url à laquelle je fais ma requête
                 "url": "{{ path('lieu_find_villes_by_cp') }}",
                 //j'envoie le code postal tapé
                 "data": {
-                    'zip': zip
+                    'codePostal': zip
                 },
                 //en GET
                 "method": "get"
@@ -116,8 +121,8 @@
                 //sera appelée lorsque la requête est terminée
                 //je reçois une liste de ville en response, déjà formattée en html
                 .done(function(response){
-                   console.log(response);
-                   $("#lieu_city").html(response);
+                   //console.log(response);
+                   $("#lieu_ville").html(response);
                 });
         });
     </script>

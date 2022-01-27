@@ -60,7 +60,6 @@ class LieuApiController extends AbstractController
         */
 
         //sauvegarde en bdd
-        $em = $em->getManager();
         $em->persist($lieu);
         $em->flush();
 
@@ -85,7 +84,14 @@ class LieuApiController extends AbstractController
     public function findVillesByCodePostal(Request $request, VilleRepository $villeRepo)
     {
         $cp= $request->query->get('codePostal');
-        $villes = $villeRepo->findBy(['codePostal' => $cp], ['nom' => 'ASC']);
+        $villes = '';
+
+        if(strlen($cp) == 5) {
+            $villes = $villeRepo->findBy(['codePostal' => $cp], ['nom' => 'ASC']);
+        }
+        else if ($cp == '0'){
+            $villes = $villeRepo->findAll();
+        }
 
         return $this->render('lieu/ajax_villes_list.html.twig', ['villes' => $villes]);
     }
