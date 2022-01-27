@@ -120,6 +120,12 @@ class AppFixtures extends Fixture
         $nomCampus = "SAINT-HERBLAIN";
         $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
         $password = $this->encoder->hashPassword($participant, $pseudo);
+        $content = file_get_contents("https://avatars.githubusercontent.com/u/4048286?v=4");
+        $filename = 'sebastienbaudin2021.jpeg';
+        $fp = fopen("./public/img/profils/" . $filename, "w");
+        fwrite($fp, $content);
+        fclose($fp);
+
         $participant
             ->setNom($nom)
             ->setPrenom($prenom)
