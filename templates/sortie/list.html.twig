@@ -68,7 +68,10 @@
                         <a href="#">Modifier</a>
                     {% endif %}
                     {% if sortie.organisateur == app.user %}
-                        <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}">Annuler</a>
+                        <form method="post" action="{{ path('sortie_annuler', {'id': sortie.id}) }}" onsubmit="return confirm('Veuillez confirmer l\'annulation, cette action est définitive!');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ sortie.id) }}">
+                            <button class="btn">Annuler</button>
+                        </form>
                     {% endif %}
                 </td>
             </tr>
