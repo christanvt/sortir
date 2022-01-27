@@ -44,8 +44,10 @@ class ImageCacheSubscriber implements EventSubscriber
     }
     public function preUpdate(PreUpdateEventArgs $args)
     {
-
-
+        $entity = $args->getEntity();
+        if (!$entity instanceof Participant) {
+            return;
+        }
         $object = $args->getObject(); //ici je récupère l'objet
 
         $linkForImage = $this->uploaderHelper->asset($object, 'imageFile'); //ici je construit le chemin de l'ancien fichier à supprimer
@@ -57,17 +59,6 @@ class ImageCacheSubscriber implements EventSubscriber
             unlink('.' . $linkForImage); //ici je supprime le fichier 
         }
 
-
-
-
-
-
-
-
-        $entity = $args->getEntity();
-        if (!$entity instanceof Participant) {
-            return;
-        }
         if ($entity->getImageFile() instanceof UploadedFile) {
             $this->cacheManager->remove($this->uploaderHelper->asset($entity, 'imageFile'));
         }

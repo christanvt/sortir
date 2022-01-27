@@ -119,6 +119,15 @@ class AppFixtures extends Fixture
         $nomCampus = "SAINT-HERBLAIN";
         $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
         $password = $this->encoder->hashPassword($participant, 'admin');
+
+        $content = file_get_contents("https://www.numerama.com/content/uploads/2015/10/chat-680x680.jpg");
+        $filename = 'image.jpeg';
+        //Store in the filesystem.
+        $fp = fopen("./public/img/profils/" . $filename, "w");
+        fwrite($fp, $content);
+        fclose($fp);
+
+
         $participant
             ->setNom($nom)
             ->setPrenom($prenom)
@@ -128,7 +137,8 @@ class AppFixtures extends Fixture
             ->setTelephone($telephone)
             ->setEmail($email)
             ->setCampus($campus)
-            ->setMotpasse($password);
+            ->setMotpasse($password)
+            ->setFilename($filename);
         $this->manager->persist($participant);
         $this->manager->flush();
     }
@@ -148,6 +158,10 @@ class AppFixtures extends Fixture
             $email = $prenom . '.' . $nom . '@' . $mailDomain;
             $campus = $this->manager->getRepository(Campus::class)->findAll()[random_int(0, 2)];
             $password = $this->encoder->hashPassword($participant, $pseudo);
+
+
+
+
             $participant
                 ->setNom($nom)
                 ->setPrenom($prenom)
