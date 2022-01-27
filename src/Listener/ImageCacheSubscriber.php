@@ -48,8 +48,6 @@ class ImageCacheSubscriber implements EventSubscriber
         if (!$entity instanceof Participant) {
             return;
         }
-
-
         $object = $args->getObject(); //ici je récupère l'objet
 
         $linkForImage = $this->uploaderHelper->asset($object, 'imageFile'); //ici je construit le chemin de l'ancien fichier à supprimer
