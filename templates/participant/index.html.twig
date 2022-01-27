@@ -19,7 +19,7 @@
 					<th>Administrateur</th>
 					<th>Actif</th>
 					<th>Pseudo</th>
-					<th>ImagePath</th>
+					<th>Photo profil</th>
 					<th>actions</th>
 				</tr>
 			</thead>
@@ -35,7 +35,11 @@
 						<td>{{ participant.administrateur ? 'Yes' : 'No' }}</td>
 						<td>{{ participant.actif ? 'Yes' : 'No' }}</td>
 						<td>{{ participant.pseudo }}</td>
-						<td>{{ participant.imagePath }}</td>
+						{% if participant.filename %}
+							<td>
+								<img src="{{ vich_uploader_asset(participant,'imageFile')|imagine_filter('thumb')}}" alt="">
+							</td>
+						{% endif %}
 						<td>
 							<a href="{{ path('participant_show', {'id': participant.id}) }}">show</a>
 							<a href="{{ path('participant_edit', {'id': participant.id}) }}">edit</a>
