@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
-
+use App\Entity\Event;
+use App\Entity\EventCancelation;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\EventState\EventStateHelper;
+use App\Form\EventCancelationType;
 use App\Form\LieuType;
 use App\Form\SortieSearchType;
 use App\Form\SortieType;
@@ -21,16 +24,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SortieController extends AbstractController
 {
-    /**
-     * @Route("/", name="index", methods={"GET"})
-     */
-    public function index(SortieRepository $sortieRepository): Response
-    {
-        return $this->render('sortie/index.html.twig', [
-            'sorties' => $sortieRepository->findAll(),
-        ]);
-    }
-
     /**
      * Liste des sorties et recherche/filtres
      *
@@ -56,15 +49,48 @@ class SortieController extends AbstractController
 
         //appelle ma méthode de recherche et filtre
         $sortieRepo = $em->getRepository(Sortie::class);
-        $paginatedEvents = $sortieRepo->search($page, 20, $this->getUser(), $searchData);
+        //$paginationSortie = $sortieRepo->search($page, 20, $this->getUser(), $searchData);
+        $paginationSortie = $sortieRepo->searchTemporaire($page, 20, $searchData);
 
-        return $this->render('sortie/index.html.twig', [
-            'paginatedEvents' => $paginatedEvents,
+        return $this->render('sortie/list.html.twig', [
+            'paginationSortie' => $paginationSortie,
             'searchForm' => $searchForm->createView()
         ]);
     }
 
+    /**
+     * Affichage d'une sortie
+     *
+     * @Route("/details/{id}", name="detail")
+     */
+    public function detail($id, EntityManagerInterface $em, SortieRepository $sortieRepo)
+    {
+        $sortie = $sortieRepo->findWithJoins($id);
 
+        //@TODO temporaire à supprimer quand on se loguera pour de vrai
+        $u = $this->getUser();
+        if($u==null) {
+            // parce que pour l'instant on ne se connecte pas au site avec un login
+            // donc je feinte
+            $u = $em->getRepository(Participant::class)->findOneBy(['email' => 'admin@admin.fr']);
+        }
+
+        //seuls les admins et l'auteur peuvent passer ici
+        if(!$this->isGranted("ROLE_ADMIN")) {
+            if ($sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
+                && $sortie->getOrganisateur() !== $u) {
+                throw $this->createNotFoundException("Cette sortie n'existe pas encore !");
+            }
+        }
+
+        if (!$sortie){
+            throw $this->createNotFoundException("Cette sortie n'existe pas !");
+        }
+
+        return $this->render('sortie/detail.html.twig', [
+            'sortie' => $sortie,
+        ]);
+    }
     /**
      * Création d'une sortie
      *
@@ -90,17 +116,24 @@ class SortieController extends AbstractController
             $sortie->setEtat($stateHelper->getEtatByNom(EtatChangeHelper::ETAT_CREEE));
 
             //on renseigne son auteur (le user actuel)
-            $sortie->setOrganisateur($this->getUser());
+            $u = $this->getUser();
+            if($u==null) {
+                // parce que pour l'instant on ne se connecte pas au site avec un login
+                // donc je feinte
+                $u = $em->getRepository(Participant::class)->findOneBy(['email' => 'admin@admin.fr']);
+            }
+
+            $sortie->setOrganisateur($u);
+            $sortie->setCampus($u->getCampus());
 
             $em->persist($sortie);
             $em->flush();
 
             //si on publie directement, alors on redirige vers cette page de publication au lieu de dupliquer le code
-            /*
             if ($sortieForm->get('publierMaintenant')->getData() === true){
-                return $this->redirectToRoute('event_publish', ['id' => $sortie->getId()]);
+                return $this->redirectToRoute('sortie_publier', ['id' => $sortie->getId()]);
             }
-            */
+
 
             $this->addFlash('success', 'Vous venez de créée une sortie !');
             return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
@@ -110,7 +143,7 @@ class SortieController extends AbstractController
         $lieuForm = $this->createForm(LieuType::class);
 
         //on passe les 2 forms pour affichage
-        return $this->render('sortie/new.html.twig', [
+        return $this->render('sortie/create.html.twig', [
             'sortieForm' => $sortieForm->createView(),
             'lieuForm' => $lieuForm->createView()
         ]);
@@ -157,5 +190,60 @@ class SortieController extends AbstractController
         }
 
         return $this->redirectToRoute('sortie_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/{id}/publier", name="publier")
+     */
+    public function publier(Sortie $sortie, EtatChangeHelper $etatHelper)
+    {
+        //vérifie que c'est bien l'auteur (ou un admin) qui est en train de publier
+        if ($this->getUser() !== $sortie->getOrganisateur() && !$this->isGranted("ROLE_ADMIN")) {
+            throw $this->createAccessDeniedException("Seul l'organisateur de cette sortie peut la publier !");
+        }
+
+        //vérifie que ça peut être publié (pas annulée, pas closed, etc.)
+        if (!$etatHelper->peutEtreOuverte($sortie)) {
+            $this->addFlash('danger', 'Cette sortie ne peut pas être publiée !');
+            return $this->redirectToRoute('sortie_list');
+        }
+
+        $etatHelper->changeEtatSortie($sortie, EtatChangeHelper::ETAT_OUVERTE);
+        $this->addFlash('success', 'La sortie est publiée !');
+
+        //@TODO set the good way
+        return $this->redirectToRoute('xxxxxxxxxxxxxxxxx', ['id' => $sortie->getId()]);
+    }
+
+
+    /**
+     * @Route("/{id}/annuler", name="cancel")
+     */
+    public function cancel(sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $etatHelper, Request $request)
+    {
+        //vérifie que la sortie n'est pas déjà annulée ou autre
+        if (!$etatHelper->peutEtreAnnulee($sortie)){
+            $this->addFlash('warning', 'Cette sortie ne peut pas être annulée !');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+
+        $cancelForm = $this->createForm(SortieAnnulationType::class, $sortie);
+
+        $cancelForm->handleRequest($request);
+        if ($cancelForm->isSubmitted() && $cancelForm->isValid()){
+            $etatHelper->changeEtatSortie($sortie, EtatChangeHelper::ETAT_ANNULEE);
+            $em->persist($sortie);
+            $em->flush();
+
+            //@TODO: prévenir les inscrits que la sortie a été annulée !
+
+            $this->addFlash('success', 'La sortie a bien été annulée.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+
+        return $this->render('sortie/cancel.html.twig', [
+            'sortie' => $sortie,
+            'cancelForm' => $cancelForm->createView()
+        ]);
     }
 }

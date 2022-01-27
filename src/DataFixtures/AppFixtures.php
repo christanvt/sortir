@@ -68,6 +68,7 @@ class AppFixtures extends Fixture
             $ville
                 ->setNom($nom)
                 ->setCodePostal($code);
+
             $this->manager->persist($ville);
         }
         $this->manager->flush();

@@ -40,24 +40,24 @@ class Ville implements \JsonSerializable  //le implements \JsonSerializable perm
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="string", length=100)
      * @Assert\NotBlank(message="Merci de saisir la ville de la sortie.")
      * @Assert\Length(max=100, maxMessage="Le nom ne peut pas excéder 100 caractères.")
      */
-    private $nom;
+    private string $nom;
     
     /**
      * @ORM\Column(type="string", length=5)
      * @Assert\NotBlank(message="Merci de renseigner le code postal.")
      * @Assert\Length(max=5, maxMessage="Le code postal ne peut pas excéder 5 caractères.")
      */
-    private $codePostal;
+    private string $codePostal;
 
     /**
-     * @ORM\OneToMany(targetEntity=Lieu::class, mappedBy="ville", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Lieu::class, mappedBy="ville", orphanRemoval=true )
      */
     private $lieus;
 
@@ -86,7 +86,7 @@ class Ville implements \JsonSerializable  //le implements \JsonSerializable perm
         return $this;
     }
 
-    public function getCodePostal(): ?string
+    public function getCodePostal(): string
     {
         return $this->codePostal;
     }

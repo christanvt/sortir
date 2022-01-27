@@ -17,13 +17,13 @@ class EtatChangeHelper
     private $doctrine;
 
     // la valeur (string) de ces constantes doit correpondre exactement au libelle de la table etat dans la DB
-    const ETAT_CREEE = 'CREEE';
-    const ETAT_OUVERTE = 'OUVERTE';
-    const ETAT_CLOTUREE = 'CLOTUREE';
+    const ETAT_CREEE = 'CREEE';         // mais pas ouverte au inscription
+    const ETAT_OUVERTE = 'OUVERTE';     // publié on peut s'incrire
+    const ETAT_CLOTUREE = 'CLOTUREE';   // le nombre max de participant est atteint
     const ETAT_ACTIVITE_EN_COURS = 'ACTIVITE_EN_COURS';
-    const ETAT_PASSEE = 'PASSEE';
-    const ETAT_ANNULEE = 'ANNULEE';
-    const ETAT_ARCHIVEE = 'ARCHIVEE';
+    const ETAT_PASSEE = 'PASSEE';       // ???
+    const ETAT_ANNULEE = 'ANNULEE';     // finalment ça se fait pas
+    const ETAT_ARCHIVEE = 'ARCHIVEE';   // date de la sortie passé d'un mois
 
     /**
      * injection de doctrine dans le service
@@ -45,8 +45,7 @@ class EtatChangeHelper
     public function getEtatByNom(string $nom)
     {
         $etatRepo = $this->doctrine->getRepository(Etat::class);
-        $etat = $etatRepo->findOneBy(['name' => $nom]);
-
+        $etat = $etatRepo->findOneBy(['libelle' => $nom]);
         return $etat;
     }
 
@@ -56,7 +55,7 @@ class EtatChangeHelper
      * @param Sortie $sortie
      * @param string $nouvelEtatNom
      */
-    public function changeEventState(Sortie $sortie, string $nouvelEtatNom)
+    public function changeEtatSortie(Sortie $sortie, string $nouvelEtatNom)
     {
         $nouvelEtat = $this->getEtatByNom($nouvelEtatNom);
         $sortie->setEtat($nouvelEtat);

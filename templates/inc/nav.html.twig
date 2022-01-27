@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/">
-			<img src="{{ asset('build/img/logo_sortie_459x459.png') }}" alt="" width="30" height="24" class="d-inline-block align-text-top"/>
+			<img src="{{ asset('build/img/favicon.png') }}" alt="" width="30" height="24" class="d-inline-block align-text-top"/>
 			Sortie
 		</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,7 +16,10 @@
 					<a class="nav-link" title="Tout les participants" href="{{ path('participant_index') }}">Participants</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" title="Tout les sorties" href="{{ path('sortie_index') }}">Sorties</a>
+					<a class="nav-link" title="Tout les sorties" href="{{ path('sortie_create') }}">Créer</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" title="Tout les sorties" href="{{ path('sortie_list') }}">Sorties</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" title="Tout les campus" href="{{ path('campus_index') }}">Campus</a>

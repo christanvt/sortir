@@ -33,7 +33,7 @@ class SortieSearchType extends AbstractType
             ->add('campus', EntityType::class, [
                 'label' => 'Site',
                 'class' => Campus::class,
-                'choice_label' => 'name',
+                'choice_label' => 'nom',
                 'required' => false,
             ])
             ->add('keyword', SearchType::class, [
@@ -42,6 +42,7 @@ class SortieSearchType extends AbstractType
             ])
             ->add('start_at_min_date', DateType::class, [
                 'label' => 'Entre le',
+                'required' => true,
                 'html5' => false,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'datepicker'],
@@ -49,6 +50,7 @@ class SortieSearchType extends AbstractType
             ])
             ->add('start_at_max_date', DateType::class, [
                 'label' => 'Et le',
+                'required' => true,
                 'html5' => false,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'datepicker'],
