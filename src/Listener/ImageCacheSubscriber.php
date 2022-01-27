@@ -51,12 +51,23 @@ class ImageCacheSubscriber implements EventSubscriber
         $object = $args->getObject(); //ici je récupère l'objet
 
         $linkForImage = $this->uploaderHelper->asset($object, 'imageFile'); //ici je construit le chemin de l'ancien fichier à supprimer
-        dump($linkForImage);
+
         if ($linkForImage == null) {
             return;
         }
         if ($linkForImage != null) {
-            unlink('.' . $linkForImage); //ici je supprime le fichier 
+            // je commente car j'ai l'erreur suivante:
+            // Warning: unlink(./img/profils/61f2b920d01f2681179437.jpg): No such file or directory
+            // j'ai essayer de mettre en try catch mais j'ai l'erreur quand même
+            /*
+            try {
+                unlink('.' . $linkForImage); //ici je supprime le fichier
+            }
+            catch (Exception $e)
+            {
+                //@TODO
+            }
+            */
         }
 
         if ($entity->getImageFile() instanceof UploadedFile) {
