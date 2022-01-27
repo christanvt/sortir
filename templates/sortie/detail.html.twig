@@ -34,16 +34,14 @@
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">Votre inscription</h5>
-                    {# il faut qu'on puisse se connecter au site pour que ça fonctionne
-                    @TODO connect to site before
                     <h6 class="card-subtitle mb-2 text-muted">{{ sortie.isParticipant(app.user) ? "Vous êtes inscrit !" : "Vous n'êtes pas inscrit !" }}</h6>
 
-                    {% if sortie.etat.libelle == 'open' %}
+                    {% if sortie.etat.libelle == 'OUVERTE' %}
                     <a class="btn btn-{{ sortie.isParticipant(app.user) ? "danger" : "success" }}" href="{{ path('participant_toggle', {'id': sortie.id}) }}">{{ sortie.isParticipant(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
-                    {% elseif sortie.etat.libelle == 'closed' and sortie.isParticipant(app.user) %}
+                    {% elseif sortie.etat.libelle == 'CLOTUREE' and sortie.isParticipant(app.user) %}
                     <a class="btn btn-danger" href="{{ path('participant_toggle', {'id': sortie.id}) }}">Me désinscrire</a>
                     {% endif %}
-                    #}
+
                     <div>Date limite : {{ sortie.dateLimiteInscription|date("d-m-Y à H:i") }}</div>
 
                 </div>
@@ -56,11 +54,11 @@
 
 
                     {% if sortie.organisateur == app.user %}
-                        {% if sortie.etat.libelle == 'created' %}
+                        {% if sortie.etat.libelle == 'CREEE' %}
                             <a class="btn btn-success" href="{{ path('sortie_publier', {'id': sortie.id}) }}">Publier</a>
                             <a class="btn btn-warning" href="#">Modifier</a>
                         {% endif %}
-                        {% if sortie.etat.libelle == 'open' or sortie.etat.libelle == 'closed' %}
+                        {% if sortie.etat.libelle == 'OUVERTE' or sortie.etat.libelle == 'CLOTUREE' %}
                             <a class="btn btn-danger" href="{{ path('sortie_annuler', {'id': sortie.id}) }}">Annuler</a>
                         {% endif %}
                     {% endif %}
@@ -88,7 +86,7 @@
             </div>
 
 
-            <details {{ sortie.participants|length > 20 ? '' : 'open' }}>
+            <details {{ sortie.participants|length > 20 ? '' : 'OUVERTE' }}>
                 <summary>{{ sortie.participants|length }} personnes inscrites !</summary>
                 <ul>
                     {% for p in sortie.participants %}
