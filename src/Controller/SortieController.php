@@ -150,16 +150,6 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="show", methods={"GET"})
-     */
-    public function show(Sortie $sortie): Response
-    {
-        return $this->render('sortie/show.html.twig', [
-            'sortie' => $sortie,
-        ]);
-    }
-
-    /**
      * @Route("/{id}/edit", name="edit", methods={"GET", "POST"})
      */
     public function edit(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
@@ -177,19 +167,6 @@ class SortieController extends AbstractController
             'sortie' => $sortie,
             'form' => $form,
         ]);
-    }
-
-    /**
-     * @Route("/{id}", name="delete", methods={"POST"})
-     */
-    public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($sortie);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('sortie_index', [], Response::HTTP_SEE_OTHER);
     }
 
     /**
@@ -217,7 +194,7 @@ class SortieController extends AbstractController
 
 
     /**
-     * @Route("/{id}/annuler", name="cancel")
+     * @Route("/{id}/annuler", name="annuler", methods={"POST"})
      */
     public function cancel(sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $etatHelper, Request $request)
     {
@@ -227,23 +204,14 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        $cancelForm = $this->createForm(SortieAnnulationType::class, $sortie);
-
-        $cancelForm->handleRequest($request);
-        if ($cancelForm->isSubmitted() && $cancelForm->isValid()){
+        if ($this->isCsrfTokenValid('annuler'.$sortie->getId(), $request->request->get('_token'))) {
             $etatHelper->changeEtatSortie($sortie, EtatChangeHelper::ETAT_ANNULEE);
             $em->persist($sortie);
             $em->flush();
-
-            //@TODO: prévenir les inscrits que la sortie a été annulée !
-
-            $this->addFlash('success', 'La sortie a bien été annulée.');
-            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        return $this->render('sortie/cancel.html.twig', [
-            'sortie' => $sortie,
-            'cancelForm' => $cancelForm->createView()
-        ]);
+        $this->addFlash('success', 'La sortie a bien été annulée.');
+        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+
     }
 }

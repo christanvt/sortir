@@ -55,20 +55,23 @@
                 <td class="d-none d-md-table-cell">{{ sortie.dateHeureDebut|date("d-m-Y à H:i") }}</td>
                 <td class="d-none d-lg-table-cell">
                     {% if not sortie.organisateur.actif %}
-                        <a href="{{ path('user_profile', {id: sortie.organisateur.id}) }}" title="Voir son profil">{{ sortie.organisateur.nom ~ " " ~ sortie.organisateur.prenom|first }} ({{ sortie.organisateur.campus.nom }})</a>
+                        <a href="{{ path('participant_edit', {id: sortie.organisateur.id}) }}" title="Voir son profil">{{ sortie.organisateur.nom ~ " " ~ sortie.organisateur.prenom|first }} ({{ sortie.organisateur.campus.nom }})</a>
                     {% else %}
                         anonyme
                     {% endif %}
                 </td>
                 <td>
                     {% if sortie.etat.libelle == 'OUVERTE' %}
-                        <a href="{{ path('subscription_toggle', {'id': sortie.id}) }}">{{ sortie.isParticipant(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
+                        <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">{{ sortie.isParticipant(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
                     {% elseif sortie.etat.libelle == 'CREEE' and sortie.organisateur == app.user %}
                         <a href="{{ path('sortie_publier', {'id': sortie.id}) }}">Publier</a>
                         <a href="#">Modifier</a>
                     {% endif %}
                     {% if sortie.organisateur == app.user %}
-                        <a href="{{ path('event_cancel', {'id': sortie.id}) }}">Annuler</a>
+                        <form method="post" action="{{ path('sortie_annuler', {'id': sortie.id}) }}" onsubmit="return confirm('Veuillez confirmer l\'annulation, cette action est définitive!');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ sortie.id) }}">
+                            <button class="btn">Annuler</button>
+                        </form>
                     {% endif %}
                 </td>
             </tr>

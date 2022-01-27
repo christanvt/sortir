@@ -28,6 +28,7 @@ class AppFixtures extends Fixture
         $this->loadLieux();
         $this->loadCampus();
         $this->loadAdmin();
+        $this->loadMeSebastienBaudin();
         $this->loadParticipants(10);
     }
     public function loadEtat(): void
@@ -104,6 +105,32 @@ class AppFixtures extends Fixture
             $campus->setNom($nom);
             $this->manager->persist($campus);
         }
+        $this->manager->flush();
+    }
+    public function loadMeSebastienBaudin(): void
+    {
+        $participant = new Participant;
+        $nom = "Baudin";
+        $prenom = "Sébastien";
+        $pseudo = "bod";
+        $administrateur = 0;
+        $actif = 1;
+        $telephone = "0123456789";
+        $email = "sebastien.baudin2021@campus-eni.fr";
+        $nomCampus = "SAINT-HERBLAIN";
+        $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
+        $password = $this->encoder->hashPassword($participant, $pseudo);
+        $participant
+            ->setNom($nom)
+            ->setPrenom($prenom)
+            ->setPseudo($pseudo)
+            ->setAdministrateur($administrateur)
+            ->setActif($actif)
+            ->setTelephone($telephone)
+            ->setEmail($email)
+            ->setCampus($campus)
+            ->setMotpasse($password);
+        $this->manager->persist($participant);
         $this->manager->flush();
     }
     public function loadAdmin(): void
