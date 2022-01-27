@@ -153,7 +153,7 @@ class AppFixtures extends Fixture
         $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
         $password = $this->encoder->hashPassword($participant, 'admin');
         $content = file_get_contents("https://www.numerama.com/content/uploads/2015/10/chat-680x680.jpg");
-        $filename = 'image.jpeg';
+        $filename = "image.jpeg";
         $fp = fopen("./public/img/profils/" . $filename, "w");
         fwrite($fp, $content);
         fclose($fp);
