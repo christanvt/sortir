@@ -113,15 +113,11 @@ class ParticipantController extends AbstractController
 
         //désincription si on trouve cette inscription
         //on la recherche dans la bdd du coup...
-        $foundParticipant = $participantRepo->findOneBy(
-            [
-                'id' => $this->getUser()->getId(),
-                'inscritAuxSorties' => $sortie
-            ]
-        );
-        if ($foundParticipant) {
+        $foundParticipant = $participantRepo->findOneBy(['id' => $this->getUser()->getId()]);
+
+        if ($sortie->isParticipant($this->getUser())) {
             //supprime l'inscription
-            $em->remove($foundParticipant);
+            $sortie->removeParticipant($foundParticipant);
             $em->flush();
 
             $this->addFlash("success", "Vous êtes désinscrit !");
@@ -137,9 +133,8 @@ class ParticipantController extends AbstractController
         }
 
         //si on s'est rendu jusqu'ici, c'est que tout est ok. On crée et sauvegarde l'inscription.
-        $participant = new Participant();
-        $participant->addSorty($sortie);
-        $em->persist($participant);
+        $foundParticipant->addSorty($sortie);
+        $em->persist($foundParticipant);
         $em->flush();
 
         //on refresh la sortie pour avoir le bon nombre d'inscrits

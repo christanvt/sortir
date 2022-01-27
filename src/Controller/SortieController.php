@@ -188,8 +188,7 @@ class SortieController extends AbstractController
         $etatHelper->changeEtatSortie($sortie, EtatChangeHelper::ETAT_OUVERTE);
         $this->addFlash('success', 'La sortie est publiée !');
 
-        //@TODO set the good way
-        return $this->redirectToRoute('xxxxxxxxxxxxxxxxx', ['id' => $sortie->getId()]);
+        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
     }
 
 

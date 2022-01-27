@@ -92,7 +92,7 @@
                 <summary>{{ sortie.participants|length }} personnes inscrites !</summary>
                 <ul>
                     {% for p in sortie.participants %}
-                        <li><a href="{{ path('participant_edit', {id: p.user.id}) }}">{{ p.user.nom }} {{ participants.user.prenom }}</a></li>
+                        <li><a href="{{ path('participant_edit', {id: p.user.id}) }}">{{ p.user.nom }} {{ p.user.prenom }}</a></li>
                     {% endfor %}
                 </ul>
             </details>

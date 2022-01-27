@@ -409,4 +409,22 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+
+    /**
+     * Teste si un User est inscrit à une sortie
+     *
+     * @param Sortie $sortie
+     * @return bool
+     */
+    public function isInscrit(Sortie $sortie): bool
+    {
+        foreach($this->getInscritAuxSorties() as $s){
+            if ($sortie->getId() === $s->getId()){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
