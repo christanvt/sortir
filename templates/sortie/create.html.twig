@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une sortie !{% endblock %}
+
+{% block body %}
+    <h2>Créer une sortie !</h2>
+
+    {{ form_start(sortieForm) }}
+    {{ form_row(sortieForm.nom) }}
+    {{ form_row(sortieForm.infosSortie) }}
+    {{ form_row(sortieForm.dateHeureDebut) }}
+    {{ form_row(sortieForm.duree) }}
+    {{ form_row(sortieForm.dateLimiteInscription) }}
+    {{ form_row(sortieForm.nbInscriptionsMax) }}
+    <div>
+        {{ form_label(sortieForm.lieu) }}
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lieuModal">Choisir</button>
+    </div>
+    {{ form_widget(sortieForm.lieu) }}
+    {{ form_errors(sortieForm.lieu) }}
+
+    <div class="mt-3">{{ form_row(sortieForm.publierMaintenant) }}</div>
+    <button class="btn btn-primary mt-3">Créer !</button>
+
+    {{ form_end(sortieForm) }}
+
+
+    {# fenêtre modale, cachée par défaut, sera affichée au clic sur le + #}
+    <div class="modal fade" id="lieuModal" tabindex="-1" aria-labelledby="lieuModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lieuModalLabel">Reanseigner le lieu de sortie</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(lieuForm, {'attr' : {'id': 'lieu_form'}}) }}
+                    {{ form_widget(lieuForm) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">OK</button>
+                </div>
+                {{ form_end(lieuForm) }}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+
+        /**
+         * Ce code gère la soumission du formulaire de la modale en ajax
+         */
+
+        //quand on tente de soumettre le formulaire de création de lieu (modale)...
+        $("#lieu_form").on("submit", function(e){
+            // bloquage de la soumission normale (pour que la page ne se recharge pas)
+            e.preventDefault();
+            // envoie des données au serveur
+            $.ajax({
+                // ATTENTION ne marche que parce que je ne suis pas dans un fichier js externe !!!
+                "url": "{{ path('lieu_create') }}",
+                // on prend toutes les données du formulaire et on les balance ...
+                "data": $("#lieu_form").serialize(),
+                // ... en POST
+                "method": "post"
+            })
+            // on reçoit le nouveau "Lieu" en response, avec son id
+            .done(function(response){
+                // ajout d'une nouvelle balise <option>, ayant pour value l'id du lieu
+                var option = $("<option>").attr("value", response.lieu.id);
+                // injection du nom du lieu en contenu de la balise
+                option.html(response.lieu.nom);
+                // sélectionner la propriété afin qu'elle soit pré-selectionnée dans le select
+                option.prop('selected', true);
+                // ajoute dans le select (au début de la liste)
+                $("#sortie_lieu").prepend(option);
+                // fermeture de la fenêtre modale
+                $('#lieuModal').modal('hide');
+            });
+        });
+    </script>
+
+    <script>
+
+        /**
+         * Ce code gère le remplissage de la liste des villes en fonction du code postal tapé
+         */
+
+        //quand on tente de soumettre le formulaire de création de lieu (modale)...
+        $("#lieu_codePostal").on("keyup", function(e){
+            //récupère la valeur tapée
+            let zip = $("#lieu_codePostal").val();
+
+            if (zip.length < 5){
+                return;
+            }
+
+            //j'envoie les données au serveur en ajax
+            $.ajax({
+                //ne marche que parce que je ne suis pas dans un fichier js externe
+                //url à laquelle je fais ma requête
+                "url": "{{ path('lieu_find_villes_by_cp') }}",
+                //j'envoie le code postal tapé
+                "data": {
+                    'zip': zip
+                },
+                //en GET
+                "method": "get"
+            })
+                //sera appelée lorsque la requête est terminée
+                //je reçois une liste de ville en response, déjà formattée en html
+                .done(function(response){
+                   console.log(response);
+                   $("#lieu_city").html(response);
+                });
+        });
+    </script>
+{% endblock %}

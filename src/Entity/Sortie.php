@@ -74,7 +74,7 @@ class Sortie
     /**
      * @ORM\ManyToMany(targetEntity=Participant::class, mappedBy="inscritAuxSorties")
      */
-    private ArrayCollection $participants;
+    private $participants;
 
     /**
      * @ORM\ManyToOne(targetEntity=Lieu::class, inversedBy="sorties")
@@ -265,6 +265,37 @@ class Sortie
         $this->campus = $campus;
 
         return $this;
+    }
+
+    /**
+     * Teste si un User est inscrit à cette sortie
+     *
+     * @param UserInterface $user
+     * @return bool
+     */
+    public function isParticipant(UserInterface $user): bool
+    {
+        foreach($this->getParticipants() as $p){
+            if ($p->getUser() === $user){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Teste si cette sortie est complète
+     *
+     * @return bool
+     */
+    public function isFull(): bool
+    {
+        if ($this->getNbInscriptionsMax() && $this->getParticipants()->count() >= $this->getNbInscriptionsMax()){
+            return true;
+        }
+
+        return false;
     }
 
 }

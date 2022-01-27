@@ -10,15 +10,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LieuRepository")
  */
-class Lieu implements \JsonSerializable //comment doit-être convertie cette classe en JSON ?
+class Lieu implements \JsonSerializable
 {
-    //comme ça
+    // classe en JSON pour l'API
     public function jsonSerialize()
     {
+        $v = $this->getVille();
         return [
             "id" => $this->getId(),
             "nom" => $this->getNom(),
             "rue" => $this->getRue(),
+            "codePostal" => $v->getCodePostal(),
+            "ville" => $v->getNom(),
             "lat" => $this->getLatitude(),
             "lng" => $this->getLongitude()
         ];
@@ -69,7 +72,7 @@ class Lieu implements \JsonSerializable //comment doit-être convertie cette cla
      * @ORM\ManyToOne(targetEntity=Ville::class, inversedBy="lieus")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $ville;
+    private Ville $ville;
 
     /**
      * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="lieu")
@@ -134,12 +137,17 @@ class Lieu implements \JsonSerializable //comment doit-être convertie cette cla
         return $this;
     }
 
-    public function getVille(): ?Ville
+    public function getCodePostal(): string
+    {
+        return $this->ville->getCodePostal();
+    }
+
+    public function getVille(): Ville
     {
         return $this->ville;
     }
 
-    public function setVille(?Ville $ville): self
+    public function setVille(Ville $ville): self
     {
         $this->ville = $ville;
 

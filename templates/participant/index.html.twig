@@ -39,6 +39,10 @@
 							<td>
 								<img src="{{ vich_uploader_asset(participant,'imageFile')|imagine_filter('thumb')}}" alt="">
 							</td>
+						{% else %}
+							<td>
+								pas de photo
+							</td>
 						{% endif %}
 						<td>
 							<a href="{{ path('participant_show', {'id': participant.id}) }}">show</a>

@@ -34,6 +34,17 @@ class Etat
         $this->sorties = new ArrayCollection();
     }
 
+    /**
+     * Cette méthode sera appelée si on fait un "echo" sur la classe elle-même
+     * Utile dans les formulaires avec le champ EntityType
+     *
+     * @return mixed
+     */
+    public function __toString()
+    {
+        return $this->id. " " .$this->libelle;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

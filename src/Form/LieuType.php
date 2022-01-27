@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Ajout de lieu
@@ -21,9 +22,11 @@ class LieuType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('codePostal', null, ['label' => 'Code postal'])
+            ->add('codePostal', null, ['label' => 'Code postal',
+                'required' => true ])
             ->add('ville', EntityType::class, [
                 'label' => 'Ville',
+                'required' => true,
                 'class' => Ville::class,
                 'choice_label' => 'nom',
                 //permet de définir comment sont chargées les données depuis la bdd
@@ -32,8 +35,10 @@ class LieuType extends AbstractType
                         ->orderBy('v.nom', 'ASC');
                 },
             ])
-            ->add('rue', null, ['label' => 'Adresse'])
-            ->add('nom', null, ['label' => 'Nom du lieu'])
+            ->add('rue', null, ['label' => 'Adresse',
+                'required' => true])
+            ->add('nom', null, ['label' => 'Nom du lieu',
+                'required' => true])
         ;
     }
 

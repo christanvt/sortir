@@ -69,10 +69,10 @@ Encore
   .configureBabelPresetEnv((config) => {
     config.useBuiltIns = "usage";
     config.corejs = 3;
-  });
+  })
 
-// enables Sass/SCSS support
-//.enableSassLoader()
+  // enables Sass/SCSS support
+  //.enableSassLoader()
 
 // uncomment if you use TypeScript
 //.enableTypeScriptLoader()
@@ -84,7 +84,7 @@ Encore
 // requires WebpackEncoreBundle 1.4 or higher
 //.enableIntegrityHashes(Encore.isProduction())
 
-// uncomment if you're having problems with a jQuery plugin
-//.autoProvidejQuery()
-
+  // uncomment if you're having problems with a jQuery plugin
+  //.autoProvidejQuery()
+;
 module.exports = Encore.getWebpackConfig();

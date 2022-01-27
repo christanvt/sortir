@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
+use App\Entity\EventSubscription;
 use App\Entity\Participant;
+use App\Entity\Sortie;
+use App\EventState\EventStateHelper;
 use App\Form\ParticipantType;
+use App\Helper\EtatChangeHelper;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -83,11 +88,69 @@ class ParticipantController extends AbstractController
      */
     public function delete(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$participant->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $participant->getId(), $request->request->get('_token'))) {
             $entityManager->remove($participant);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('participant_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * Inscrit un participant à une sortie, OU le désinscrit
+     *
+     * @Route("/sorties/{id}/participant/", name="participant_toggle")
+     */
+    public function toggle(Sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $etatChangeHelper)
+    {
+        $participantRepo = $em->getRepository(Participant::class);
+
+        //la sortie doit être dans l'état ouverte pour qu'on puisse s'y inscrire
+        if ($sortie->getEtat()->getLibelle() !== EtatChangeHelper::ETAT_OUVERTE) {
+            $this->addFlash("danger", "Cette sortie n'est pas ouverte aux inscriptions !");
+            return $this->redirectToRoute('sortie_detail', ["id" => $sortie->getId()]);
+        }
+
+        //désincription si on trouve cette inscription
+        //on la recherche dans la bdd du coup...
+        $foundParticipant = $participantRepo->findOneBy(
+            [
+                'id' => $this->getUser()->getId(),
+                'inscritAuxSorties' => $sortie
+            ]
+        );
+        if ($foundParticipant) {
+            //supprime l'inscription
+            $em->remove($foundParticipant);
+            $em->flush();
+
+            $this->addFlash("success", "Vous êtes désinscrit !");
+            return $this->redirectToRoute('sortie_detail', ["id" => $sortie->getId()]);
+        }
+
+        //sinon,
+        // si on ne l'a pas trouvée dans la DB, alors on s'inscrit
+        // la sortie est-elle complète ?
+        if ($sortie->isFull()) {
+            $this->addFlash("danger", "Cette sortie est complète !");
+            return $this->redirectToRoute('sortie_detail', ["id" => $sortie->getId()]);
+        }
+
+        //si on s'est rendu jusqu'ici, c'est que tout est ok. On crée et sauvegarde l'inscription.
+        $participant = new Participant();
+        $participant->addSorty($sortie);
+        $em->persist($participant);
+        $em->flush();
+
+        //on refresh la sortie pour avoir le bon nombre d'inscrits
+        $em->refresh($sortie);
+
+        //maintenant,si c'est complet pour changer son état
+        if ($sortie->isFull()) {
+            $etatChangeHelper->changeEtatSortie($sortie, EtatChangeHelper::ETAT_CLOTUREE);
+        }
+
+        $this->addFlash("success", "Vous êtes inscrit !");
+        return $this->redirectToRoute('sortie_detail', ["id" => $sortie->getId()]);
     }
 }

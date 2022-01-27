@@ -37,16 +37,14 @@ class SortieType extends AbstractType
             ->add('lieu', EntityType::class, [
                 'label' => 'Lieu',
                 'class' => Lieu::class,
-                'choice_label' => 'name',
+                'choice_label' => 'nom',
             ])
-            /*
             ->add('publierMaintenant', CheckboxType::class, [
                 'label' => 'Rendre visible tout de suite',
                 'mapped' => false,
                 'data' => true,
                 'required' => false,
             ])
-            */
         ;
     }
 
