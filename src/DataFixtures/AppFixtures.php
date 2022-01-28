@@ -65,11 +65,11 @@ class AppFixtures extends Fixture
     {
         $faker = Faker\Factory::create('fr_FR');
         $allVille = $this->manager->getRepository(Ville::class)->findAll();
-        for($i=0; $i<$num; $i++){
+        for ($i = 0; $i < $num; $i++) {
             $lieu = new Lieu();
-            $lieu->setNom('Guinguette chez '. $faker->name() );
-            $lieu->setRue( $faker->streetName );
-            $lieu->setVille( $faker->randomElement($allVille));
+            $lieu->setNom('Guinguette chez ' . $faker->name());
+            $lieu->setRue($faker->streetName);
+            $lieu->setVille($faker->randomElement($allVille));
             $this->manager->persist($lieu);
         }
         $this->manager->flush();
@@ -157,6 +157,17 @@ class AppFixtures extends Fixture
     public function loadParticipants(int $count): void
     {
         $faker = Faker\Factory::create('fr_FR');
+        // $fileTypeCheck = './public/img/profils/*.jpg';
+        $folderTarget = './public/img/profils/';
+        if (file_exists($folderTarget)) {
+            foreach (glob("./public/img/profils/*.jpg") as $fileTypeCheck) {
+                unlink($fileTypeCheck);
+            }
+            foreach (glob("./public/img/profils/*.jpeg") as $fileTypeCheck) {
+                unlink($fileTypeCheck);
+            }
+        }
+
         for ($i = 0; $i < $count; $i++) {
 
             $participant = new Participant;
