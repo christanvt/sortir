@@ -56,18 +56,7 @@ class ImageCacheSubscriber implements EventSubscriber
             return;
         }
         if ($linkForImage != null) {
-            // je commente car j'ai l'erreur suivante:
-            // Warning: unlink(./img/profils/61f2b920d01f2681179437.jpg): No such file or directory
-            // j'ai essayer de mettre en try catch mais j'ai l'erreur quand même
-            /*
-            try {
-                unlink('.' . $linkForImage); //ici je supprime le fichier
-            }
-            catch (Exception $e)
-            {
-                //@TODO
-            }
-            */
+            unlink('.' . $linkForImage); //ici je supprime le fichier
         }
 
         if ($entity->getImageFile() instanceof UploadedFile) {
