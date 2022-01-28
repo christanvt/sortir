@@ -30,9 +30,9 @@ class AppFixtures extends Fixture
         $this->loadVilles();
         $this->loadLieux(2);
         $this->loadCampus();
+        $this->loadParticipants(10);
         $this->loadAdmin();
         $this->loadMeSebastienBaudin();
-        $this->loadParticipants(10);
     }
 
     public function loadEtat(): void
@@ -87,71 +87,6 @@ class AppFixtures extends Fixture
             $campus->setNom($nom);
             $this->manager->persist($campus);
         }
-        $this->manager->flush();
-    }
-    public function loadMeSebastienBaudin(): void
-    {
-        $participant = new Participant;
-        $nom = "Baudin";
-        $prenom = "Sébastien";
-        $pseudo = "bod";
-        $administrateur = 0;
-        $actif = 1;
-        $telephone = "0123456789";
-        $email = "sebastien.baudin2021@campus-eni.fr";
-        $nomCampus = "SAINT-HERBLAIN";
-        $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
-        $password = $this->encoder->hashPassword($participant, $pseudo);
-        $content = file_get_contents("https://avatars.githubusercontent.com/u/4048286?v=4");
-        $filename = 'sebastienbaudin2021.jpeg';
-        $fp = fopen("./public/img/profils/" . $filename, "w");
-        fwrite($fp, $content);
-        fclose($fp);
-
-        $participant
-            ->setNom($nom)
-            ->setPrenom($prenom)
-            ->setPseudo($pseudo)
-            ->setAdministrateur($administrateur)
-            ->setActif($actif)
-            ->setTelephone($telephone)
-            ->setEmail($email)
-            ->setCampus($campus)
-            ->setMotpasse($password)
-            ->setFilename($filename);
-        $this->manager->persist($participant);
-        $this->manager->flush();
-    }
-    public function loadAdmin(): void
-    {
-        $participant = new Participant;
-        $nom = "ADMIN";
-        $prenom = "ADMIN";
-        $pseudo = "ADMIN";
-        $administrateur = 1;
-        $actif = 1;
-        $telephone = "0123456789";
-        $email = "admin@admin.fr";
-        $nomCampus = "SAINT-HERBLAIN";
-        $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
-        $password = $this->encoder->hashPassword($participant, 'admin');
-        $content = file_get_contents("https://www.numerama.com/content/uploads/2015/10/chat-680x680.jpg");
-        $filename = "image.jpeg";
-        $fp = fopen("./public/img/profils/" . $filename, "w");
-        fwrite($fp, $content);
-        fclose($fp);
-        $participant
-            ->setNom($nom)
-            ->setPrenom($prenom)
-            ->setPseudo($pseudo)
-            ->setAdministrateur($administrateur)
-            ->setActif($actif)
-            ->setTelephone($telephone)
-            ->setEmail($email)
-            ->setCampus($campus)
-            ->setMotpasse($password)
-            ->setFilename($filename);
-        $this->manager->persist($participant);
         $this->manager->flush();
     }
     public function loadParticipants(int $count): void
@@ -213,6 +148,72 @@ class AppFixtures extends Fixture
                 ->setFilename($filename);
             $this->manager->persist($participant);
         }
+        $this->manager->flush();
+    }
+
+    public function loadMeSebastienBaudin(): void
+    {
+        $participant = new Participant;
+        $nom = "Baudin";
+        $prenom = "Sébastien";
+        $pseudo = "bod";
+        $administrateur = 0;
+        $actif = 1;
+        $telephone = "0123456789";
+        $email = "sebastien.baudin2021@campus-eni.fr";
+        $nomCampus = "SAINT-HERBLAIN";
+        $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
+        $password = $this->encoder->hashPassword($participant, $pseudo);
+        $content = file_get_contents("https://avatars.githubusercontent.com/u/4048286?v=4");
+        $filename = 'sebastienbaudin2021.jpeg';
+        $fp = fopen("./public/img/profils/" . $filename, "w");
+        fwrite($fp, $content);
+        fclose($fp);
+
+        $participant
+            ->setNom($nom)
+            ->setPrenom($prenom)
+            ->setPseudo($pseudo)
+            ->setAdministrateur($administrateur)
+            ->setActif($actif)
+            ->setTelephone($telephone)
+            ->setEmail($email)
+            ->setCampus($campus)
+            ->setMotpasse($password)
+            ->setFilename($filename);
+        $this->manager->persist($participant);
+        $this->manager->flush();
+    }
+    public function loadAdmin(): void
+    {
+        $participant = new Participant;
+        $nom = "ADMIN";
+        $prenom = "ADMIN";
+        $pseudo = "ADMIN";
+        $administrateur = 1;
+        $actif = 1;
+        $telephone = "0123456789";
+        $email = "admin@admin.fr";
+        $nomCampus = "SAINT-HERBLAIN";
+        $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
+        $password = $this->encoder->hashPassword($participant, 'admin');
+        $content = file_get_contents("https://www.lense.fr/wp-content/uploads/2014/06/steve-jobs-albert-watson-bw.jpg");
+        $filename = "image.jpg";
+        $fp = fopen("./public/img/profils/" . $filename, "w");
+        fwrite($fp, $content);
+        fclose($fp);
+        $participant
+            ->setNom($nom)
+            ->setPrenom($prenom)
+            ->setPseudo($pseudo)
+            ->setAdministrateur($administrateur)
+            ->setActif($actif)
+            ->setTelephone($telephone)
+            ->setEmail($email)
+            ->setCampus($campus)
+            ->setMotpasse($password)
+            ->setFilename($filename);
+        $this->manager->persist($participant);
         $this->manager->flush();
     }
 }
