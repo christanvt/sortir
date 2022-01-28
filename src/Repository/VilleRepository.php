@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Etat;
 use App\Entity\Ville;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,5 +30,17 @@ class VilleRepository extends ServiceEntityRepository
             ->addOrderBy('v.nom', 'ASC');
 
         return $this->paginator->paginate($qb, $page, $numPerPage);
+    }
+
+    public function findByCodePostalStartWith(string $cp)
+    {
+        $villeRepo = $this->getEntityManager()->getRepository(Ville::class);
+        $result = $villeRepo->createQueryBuilder('v')
+            ->where('v.codePostal LIKE :cp')
+            ->setParameter('cp', $cp.'%')
+            ->orderBy('v.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+        return $result;
     }
 }

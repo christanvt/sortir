@@ -99,15 +99,11 @@
             //récupère la valeur tapée
             let zip = $("#lieu_codePostal").val();
 
-            if (zip.length < 5 && zip.length != 0){
+            if (zip.length < 2){
                 return;
-            }
-            if (zip.length == 0){
-                zip = '0';
             }
             //j'envoie les données au serveur en ajax
             $.ajax({
-
                 //ne marche que parce que je ne suis pas dans un fichier js externe
                 //url à laquelle je fais ma requête
                 "url": "{{ path('lieu_find_villes_by_cp') }}",

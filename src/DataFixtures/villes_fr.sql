@@ -1706,7 +1706,7 @@ INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (1680, 'Sainte-Croix-à-Lauze', '04110'),
 (1681, 'Sainte-Croix-du-Verdon', '04500'),
 (1682, 'Hautes-Duyes', '04380');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (1683, 'Saint-Étienne-les-Orgues', '04230'),
 (1684, 'Saint-Geniez', '04200'),
 (1685, 'Saint-Jacques', '04330'),
@@ -3359,7 +3359,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (3332, 'Épothémont', '10500'),
 (3333, 'Ervy-le-Châtel', '10130'),
 (3334, 'Essoyes', '10360');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (3335, 'Estissac', '10190'),
 (3336, 'Étourvy', '10210'),
 (3337, 'Étrelles-sur-Aube', '10170'),
@@ -4957,7 +4957,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (4929, 'Sainte-Honorine-de-Ducy', '14240'),
 (4930, 'Aure sur Mer', '14520'),
 (4931, 'Aure sur Mer', '14710');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (4932, 'Sainte-Honorine-du-Fay', '14210'),
 (4933, 'Saint-Hymer', '14130'),
 (4934, 'Saint-Jean-de-Livet', '14100'),
@@ -6588,7 +6588,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (6559, 'Lignareix', '19200'),
 (6560, 'Ligneyrac', '19500'),
 (6561, 'Liourdres', '19120');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (6562, 'Lissac-sur-Couze', '19600'),
 (6563, 'Le Lonzac', '19470'),
 (6564, 'Lostanges', '19500'),
@@ -8192,7 +8192,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (8162, 'Conne-de-Labarde', '24560'),
 (8163, 'La Coquille', '24450'),
 (8164, 'Corgnac-sur-l\'Isle', '24800');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (8165, 'Cornille', '24750'),
 (8166, 'Coubjours', '24390'),
 (8167, 'Coulaures', '24420'),
@@ -9771,7 +9771,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (9740, 'Fleury-sur-Andelle', '27380'),
 (9741, 'Flipou', '27380'),
 (9742, 'Folleville', '27230');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (9743, 'Fontaine-Bellenger', '27600'),
 (9744, 'Fontaine-l\'Abbé', '27470'),
 (9745, 'Fontaine-la-Louvet', '27230'),
@@ -11350,7 +11350,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (11318, 'Martignargues', '30360'),
 (11319, 'Le Martinet', '30960'),
 (11320, 'Maruéjols-lès-Gardon', '30350');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (11321, 'Massanes', '30350'),
 (11322, 'Massillargues-Attuech', '30140'),
 (11323, 'Mauressargues', '30350'),
@@ -12969,7 +12969,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (12936, 'Saint-André-du-Bois', '33490'),
 (12937, 'Saint-André-et-Appelles', '33220'),
 (12938, 'Saint-Androny', '33390');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (12939, 'Saint-Antoine-du-Queyret', '33790'),
 (12940, 'Saint-Antoine-sur-l\'Isle', '33660'),
 (12941, 'Saint-Aubin-de-Blaye', '33820'),
@@ -14520,7 +14520,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (14486, 'Gillonnay', '38260'),
 (14487, 'Goncelin', '38570'),
 (14488, 'Le Grand-Lemps', '38690');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (14489, 'Granieu', '38490'),
 (14490, 'Grenay', '38540'),
 (14491, 'Grenoble', '38000'),
@@ -16117,7 +16117,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (16082, 'Jarnosse', '42460'),
 (16083, 'Jas', '42110'),
 (16084, 'Jonzieux', '42660');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (16085, 'Juré', '42430'),
 (16086, 'Lavieu', '42560'),
 (16087, 'Lay', '42470'),
@@ -17672,7 +17672,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (17636, 'Puymirol', '47270'),
 (17637, 'Puysserampion', '47800'),
 (17638, 'Rayet', '47210');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (17639, 'Razimet', '47160'),
 (17640, 'Réaup-Lisse', '47170'),
 (17641, 'La Réunion', '47700'),
@@ -19175,7 +19175,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (19138, 'Soulières', '51130'),
 (19139, 'Suippes', '51600'),
 (19140, 'Suizy-le-Franc', '51270');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (19141, 'Taissy', '51500'),
 (19142, 'Talus-Saint-Prix', '51270'),
 (19143, 'Val de Livre', '51150'),
@@ -20725,7 +20725,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (20687, 'Fresnes-au-Mont', '55260'),
 (20688, 'Fresnes-en-Woëvre', '55160'),
 (20689, 'Froidos', '55120');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (20690, 'Fromeréville-les-Vallons', '55100'),
 (20691, 'Fromezey', '55400'),
 (20692, 'Futeau', '55120'),
@@ -22336,7 +22336,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (22297, 'Urzy', '58130'),
 (22298, 'Vandenesse', '58290'),
 (22299, 'Varennes-lès-Narcy', '58400');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (22300, 'Varennes-Vauzelles', '58640'),
 (22301, 'Varzy', '58210'),
 (22302, 'Vauclaix', '58140'),
@@ -23930,7 +23930,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (23890, 'Montsecret-Clairefougère', '61800'),
 (23891, 'Mortagne-au-Perche', '61400'),
 (23892, 'Mortrée', '61570');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (23893, 'La Motte-Fouquet', '61600'),
 (23894, 'Moulins-la-Marche', '61380'),
 (23895, 'Moulins-sur-Orne', '61200'),
@@ -25491,7 +25491,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (25450, 'Anoye', '64350'),
 (25451, 'Aramits', '64570'),
 (25452, 'Arancou', '64270');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (25453, 'Araujuzon', '64190'),
 (25454, 'Araux', '64190'),
 (25455, 'Arbérats-Sillègue', '64120'),
@@ -27160,7 +27160,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (27118, 'Strasbourg', '67200'),
 (27119, 'Struth', '67290'),
 (27120, 'Stundwiller', '67250');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (27121, 'Stutzheim-Offenheim', '67370'),
 (27122, 'Sundhouse', '67920'),
 (27123, 'Surbourg', '67250'),
@@ -28747,7 +28747,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (28704, 'La Motte-Saint-Jean', '71160'),
 (28705, 'Mouthier-en-Bresse', '71270'),
 (28706, 'Mussy-sous-Dun', '71170');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (28707, 'Nanton', '71240'),
 (28708, 'Navilly', '71270'),
 (28709, 'Neuvy-Grandchamp', '71130'),
@@ -30280,7 +30280,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (30236, 'Hattenville', '76640'),
 (30237, 'Haucourt', '76440'),
 (30238, 'Haudricourt', '76390');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (30239, 'Haussez', '76440'),
 (30240, 'Hautot-l\'Auvray', '76450'),
 (30241, 'Hautot-le-Vatois', '76190'),
@@ -31799,7 +31799,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (31754, 'Bailleul', '80490'),
 (31755, 'Baizieux', '80300'),
 (31756, 'Balâtre', '80700');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (31757, 'Barleux', '80200'),
 (31758, 'Barly', '80600'),
 (31759, 'Bavelincourt', '80260'),
@@ -33399,7 +33399,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (33353, 'Champagné-les-Marais', '85450'),
 (33354, 'Le Champ-Saint-Père', '85540'),
 (33355, 'Chantonnay', '85110');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (33356, 'La Chapelle-aux-Lys', '85120'),
 (33357, 'La Chapelle-Hermier', '85220'),
 (33358, 'La Chapelle-Palluau', '85670'),
@@ -34960,7 +34960,7 @@ INSERT INTO `city` (`id`, `name`, `zip`) VALUES
 (34913, 'Serrigny', '89700'),
 (34914, 'Sery', '89270'),
 (34915, 'Les Sièges', '89190');
-INSERT INTO `city` (`id`, `name`, `zip`) VALUES
+INSERT INTO `ville` (`id`, `nom`, `code_postal`) VALUES
 (34916, 'Sommecaise', '89110'),
 (34917, 'Sormery', '89570'),
 (34918, 'Soucy', '89100'),

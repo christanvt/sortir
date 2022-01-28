@@ -89,8 +89,8 @@ class LieuApiController extends AbstractController
         if(strlen($cp) == 5) {
             $villes = $villeRepo->findBy(['codePostal' => $cp], ['nom' => 'ASC']);
         }
-        else if ($cp == '0'){
-            $villes = $villeRepo->findAll();
+        else if (strlen($cp) >= 2){
+            $villes = $villeRepo->findByCodePostalStartWith($cp);
         }
 
         return $this->render('lieu/ajax_villes_list.html.twig', ['villes' => $villes]);

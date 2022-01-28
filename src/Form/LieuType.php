@@ -23,7 +23,8 @@ class LieuType extends AbstractType
     {
         $builder
             ->add('codePostal', null, ['label' => 'Code postal',
-                'required' => true ])
+                'required' => true,
+                'data' => '44'])
             ->add('ville', EntityType::class, [
                 'label' => 'Ville',
                 'required' => true,
@@ -32,6 +33,8 @@ class LieuType extends AbstractType
                 //permet de définir comment sont chargées les données depuis la bdd
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('v')
+                        ->where('v.codePostal LIKE :cp')
+                        ->setParameter('cp', '44%')
                         ->orderBy('v.nom', 'ASC');
                 },
             ])
@@ -39,6 +42,8 @@ class LieuType extends AbstractType
                 'required' => true])
             ->add('nom', null, ['label' => 'Nom du lieu',
                 'required' => true])
+            ->add('latitude', null, ['label' => 'latitude'])
+            ->add('longitude', null, ['label' => 'longitude'])
         ;
     }
 
