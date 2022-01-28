@@ -54,6 +54,17 @@ class ParticipantController extends AbstractController
     }
 
     /**
+     * @Route("/my_profil", name="participant_my_profil", methods={"GET"})
+     */
+    public function my_profil(ParticipantRepository $participantRepository): Response
+    {
+
+        return $this->render('participant/show.html.twig', [
+            'participant' => $participantRepository->findOneby(['id' => $this->getUser()]),
+        ]);
+    }
+
+    /**
      * @Route("/{id}", name="participant_show", methods={"GET"})
      */
     public function show(Participant $participant): Response
