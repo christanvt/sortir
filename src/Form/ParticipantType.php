@@ -14,7 +14,6 @@ class ParticipantType extends AbstractType
     {
         $builder
             ->add('email')
-            ->add('motpasse')
             ->add('nom')
             ->add('prenom')
             ->add('telephone')
@@ -24,7 +23,6 @@ class ParticipantType extends AbstractType
             ->add('imageFile', FileType::class, [
                 'required' => false
             ])
-            ->add('inscritAuxSorties')
             ->add('campus');
     }
 

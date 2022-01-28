@@ -54,7 +54,7 @@
                 {% endif %}
                 <td class="d-none d-md-table-cell">{{ sortie.dateHeureDebut|date("d-m-Y à H:i") }}</td>
                 <td class="d-none d-lg-table-cell">
-                    {% if not sortie.organisateur.actif %}
+                    {% if sortie.organisateur.actif %}
                         <a href="{{ path('participant_edit', {id: sortie.organisateur.id}) }}" title="Voir son profil">{{ sortie.organisateur.nom ~ " " ~ sortie.organisateur.prenom|first }} ({{ sortie.organisateur.campus.nom }})</a>
                     {% else %}
                         anonyme
