@@ -24,6 +24,7 @@ class AppFixtures extends Fixture
     }
     public function load(ObjectManager $manager): void
     {
+        ini_set('memory_limit', '1024M');
         $this->manager = $manager;
         $this->loadEtat();
         $this->loadVilles();
