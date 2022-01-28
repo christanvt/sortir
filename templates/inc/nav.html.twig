@@ -34,12 +34,18 @@
 					<a class="nav-link" title="Tout les états" href="{{ path('etat_index') }}">Etats</a>
 				</li>
 				{% if app.user %}
-					<li class="nav-item">
-						<a class="nav-link disabled" title="Login" href="{{ path('app_logout') }}" style="color:red;">Connecté en tant que
-							{{app.user.pseudo}}</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" title="Login" href="{{ path('app_logout') }}">Se déconnecter</a>
+					<li class="nav-item dropdown ms-2">
+						<img class="nav-link dropdown-toggle imgProfil" src="{{ vich_uploader_asset(app.user,'imageFile')|imagine_filter('accu')}}" width="40" height="auto" alt="Photo de profil" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li>
+								<a class="dropdown-item disabled" title="Login" href="#">mon profil</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li>
+								<a class="dropdown-item" title="Login" href="{{ path('app_logout') }}">Se déconnecter</a>
+							</li>
+						</ul>
 					</li>
 				{% else %}
 					<li class="nav-item">
