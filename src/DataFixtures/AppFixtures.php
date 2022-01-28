@@ -179,7 +179,26 @@ class AppFixtures extends Fixture
 
             $participant = new Participant;
             $nom = $faker->lastName();
-            $prenom = $faker->firstname();
+            $genre = random_int(0, 1);
+            if ($genre == 0) {
+                $prenom = $faker->firstNameFemale();
+                $datas = file_get_contents("https://fakeface.rest/face/json?gender=female&minimum_age=25&maximum_age=40");
+                $decodeDatas = json_decode($datas, true);
+                $content = file_get_contents($decodeDatas["image_url"]);
+                $filename = $decodeDatas["filename"];
+                $fp = fopen("./public/img/profils/" . $filename, "w");
+                fwrite($fp, $content);
+                fclose($fp);
+            } else {
+                $prenom = $faker->firstNameMale();
+                $datas = file_get_contents("https://fakeface.rest/face/json?gender=male&minimum_age=25&maximum_age=40");
+                $decodeDatas = json_decode($datas, true);
+                $content = file_get_contents($decodeDatas["image_url"]);
+                $filename = $decodeDatas["filename"];
+                $fp = fopen("./public/img/profils/" . $filename, "w");
+                fwrite($fp, $content);
+                fclose($fp);
+            }
             $pseudo = $prenom . '.' . $nom;
             $administrateur = 0;
             $actif = 1;
@@ -197,7 +216,8 @@ class AppFixtures extends Fixture
                 ->setTelephone($telephone)
                 ->setEmail($email)
                 ->setCampus($campus)
-                ->setMotpasse($password);
+                ->setMotpasse($password)
+                ->setFilename($filename);
             $this->manager->persist($participant);
         }
         $this->manager->flush();
