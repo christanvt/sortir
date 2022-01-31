@@ -2,14 +2,16 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Campus;
-use App\Entity\City;
-use App\Entity\Location;
 use Faker;
+use App\Entity\City;
 use App\Entity\Etat;
 use App\Entity\Lieu;
-use App\Entity\Participant;
 use App\Entity\Ville;
+use App\Entity\Campus;
+use App\Entity\Sortie;
+use DateTimeImmutable;
+use App\Entity\Location;
+use App\Entity\Participant;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -33,6 +35,7 @@ class AppFixtures extends Fixture
         $this->loadParticipants(10);
         $this->loadAdmin();
         $this->loadMeSebastienBaudin();
+        $this->loadSorties(5);
     }
 
     public function loadEtat(): void
@@ -92,13 +95,24 @@ class AppFixtures extends Fixture
     public function loadParticipants(int $count): void
     {
         $faker = Faker\Factory::create('fr_FR');
-        // $fileTypeCheck = './public/img/profils/*.jpg';
-        $folderTarget = './public/img/profils/';
+        $folderTarget = './public/';
         if (file_exists($folderTarget)) {
-            foreach (glob("./public/img/profils/*.jpg") as $fileTypeCheck) {
+            foreach (glob("./public/img/*/*.jpg") as $fileTypeCheck) {
                 unlink($fileTypeCheck);
             }
-            foreach (glob("./public/img/profils/*.jpeg") as $fileTypeCheck) {
+            foreach (glob("./public/img/*/*.jpeg") as $fileTypeCheck) {
+                unlink($fileTypeCheck);
+            }
+            foreach (glob("./public/media/cache/thumb/img/profils/*.jpeg") as $fileTypeCheck) {
+                unlink($fileTypeCheck);
+            }
+            foreach (glob("./public/media/cache/thumb/img/profils/*.jpg") as $fileTypeCheck) {
+                unlink($fileTypeCheck);
+            }
+            foreach (glob("./public/media/cache/accu/img/profils/*.jpeg") as $fileTypeCheck) {
+                unlink($fileTypeCheck);
+            }
+            foreach (glob("./public/media/cache/accu/img/profils/*.jpg") as $fileTypeCheck) {
                 unlink($fileTypeCheck);
             }
         }
@@ -214,6 +228,38 @@ class AppFixtures extends Fixture
             ->setMotpasse($password)
             ->setFilename($filename);
         $this->manager->persist($participant);
+        $this->manager->flush();
+    }
+    public function loadSorties(int $count): void
+    {
+
+        for ($i = 0; $i < $count; $i++) {
+
+            $sortie = new Sortie;
+            $nom = "sortie à ...";
+            $infos = "Je vous donne rendez vous à ...";
+            $dateHeureDébut = new DateTimeImmutable('now');
+            $durée = 3;
+            $dateLimitInscription = new DateTimeImmutable('yesterday');
+            $nbrMaxParticipants = 9;
+            $organisateur = $this->manager->getRepository(Participant::class)->findAll()[random_int(0, 9)];
+            $lieu = $this->manager->getRepository(Lieu::class)->findAll()[random_int(0, 1)];
+            $campus = $organisateur->getCampus();
+            $etat = $this->manager->getRepository(Etat::class)->findAll()[random_int(0, 6)];
+
+            $sortie
+                ->setNom($nom)
+                ->setInfosSortie($infos)
+                ->setDateHeureDebut($dateHeureDébut)
+                ->setDuree($durée)
+                ->setDateLimiteInscription($dateLimitInscription)
+                ->setNbInscriptionsMax($nbrMaxParticipants)
+                ->setOrganisateur($organisateur)
+                ->setCampus($campus)
+                ->setEtat($etat)
+                ->setLieu($lieu);
+            $this->manager->persist($sortie);
+        }
         $this->manager->flush();
     }
 }
