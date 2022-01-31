@@ -2,12 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Event;
-use App\Entity\EventCancelation;
 use App\Entity\Participant;
 use App\Entity\Sortie;
-use App\EventState\EventStateHelper;
-use App\Form\EventCancelationType;
 use App\Form\LieuType;
 use App\Form\SortieSearchType;
 use App\Form\SortieType;
