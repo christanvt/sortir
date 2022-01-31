@@ -149,6 +149,8 @@ class AppFixtures extends Fixture
             $email = $prenom . '.' . $nom . '@' . $mailDomain;
             $campus = $this->manager->getRepository(Campus::class)->findAll()[random_int(0, 2)];
             $password = $this->encoder->hashPassword($participant, $pseudo);
+            $date = new DateTimeImmutable('now');
+
             $participant
                 ->setNom($nom)
                 ->setPrenom($prenom)
@@ -159,7 +161,8 @@ class AppFixtures extends Fixture
                 ->setEmail($email)
                 ->setCampus($campus)
                 ->setMotpasse($password)
-                ->setFilename($filename);
+                ->setFilename($filename)
+                ->setUpdatedAt($date);
             $this->manager->persist($participant);
         }
         $this->manager->flush();
@@ -183,6 +186,7 @@ class AppFixtures extends Fixture
         $fp = fopen("./public/img/profils/" . $filename, "w");
         fwrite($fp, $content);
         fclose($fp);
+        $date = new DateTimeImmutable('now');
 
         $participant
             ->setNom($nom)
@@ -194,7 +198,8 @@ class AppFixtures extends Fixture
             ->setEmail($email)
             ->setCampus($campus)
             ->setMotpasse($password)
-            ->setFilename($filename);
+            ->setFilename($filename)
+            ->setUpdatedAt($date);
         $this->manager->persist($participant);
         $this->manager->flush();
     }
@@ -216,6 +221,7 @@ class AppFixtures extends Fixture
         $fp = fopen("./public/img/profils/" . $filename, "w");
         fwrite($fp, $content);
         fclose($fp);
+        $date = new DateTimeImmutable('now');
         $participant
             ->setNom($nom)
             ->setPrenom($prenom)
@@ -226,7 +232,8 @@ class AppFixtures extends Fixture
             ->setEmail($email)
             ->setCampus($campus)
             ->setMotpasse($password)
-            ->setFilename($filename);
+            ->setFilename($filename)
+            ->setUpdatedAt($date);
         $this->manager->persist($participant);
         $this->manager->flush();
     }
