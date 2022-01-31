@@ -135,7 +135,7 @@ class SortieController extends AbstractController
 
 
             $this->addFlash('success', 'Vous venez de créée une sortie !');
-            return $this->redirectToRoute('sortie_show', ['id' => $sortie->getId()]);
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
         //formulaire de lieu, pas traité ici ! Il est en effet soumis en ajax, vers une autre route
@@ -159,10 +159,10 @@ class SortieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('sortie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('sortie_list', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sortie/edit.html.twig', [
+        return $this->renderForm('sortie/detail.html.twig', [
             'sortie' => $sortie,
             'form' => $form,
         ]);
