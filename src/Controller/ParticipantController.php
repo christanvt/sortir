@@ -3,18 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Entity\EventSubscription;
-use App\Entity\Participant;
 use App\Entity\Sortie;
-use App\EventState\EventStateHelper;
+use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Helper\EtatChangeHelper;
-use App\Repository\ParticipantRepository;
+use App\Entity\EventSubscription;
+use App\EventState\EventStateHelper;
+use App\Form\ParticipantIdentifedType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ParticipantRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/participant")
@@ -79,7 +80,16 @@ class ParticipantController extends AbstractController
      */
     public function edit(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ParticipantType::class, $participant);
+        if (
+            $this->isGranted('ROLE_ADMIN')
+        ) {
+            $form = $this->createForm(ParticipantType::class, $participant);
+        } else {
+
+            $form = $this->createForm(ParticipantIdentifedType::class, $participant);
+        };
+
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

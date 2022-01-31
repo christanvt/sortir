@@ -5,30 +5,7 @@
 
 {% block body %}
 	<h1>Edit Participant</h1>
-	{% if  is_granted('ROLE_ADMIN') %}
-		{{ include('participant/_form.html.twig', {'button_label': 'Enregistrer'}) }}
-	{% else %}
-
-		{{form_start(form)}}
-		{{ form_row(form.pseudo)}}
-		{{ form_row(form.prenom)}}
-		{{ form_row(form.nom)}}
-		{{ form_row(form.telephone)}}
-		{{ form_row(form.email)}}
-		{{ form_row(form.motpasse)}}
-		{{ form_row(form.campus)}}
-		{{ form_row(form.imageFile)}}
-
-		<div class="hiddenForm col-3">
-			{{ form_row(form.administrateur)}}
-			{{ form_row(form.actif)}}
-		</div>
-		<button class="btn btn-lg btn-primary col-6">
-			{{ button_label|default('Enregistrer') }}
-		</button>
-
-		{{ form_end(form)}}
-	{% endif %}
+	{{ include('participant/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 
 
 	{% if  is_granted('ROLE_ADMIN') %}

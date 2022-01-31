@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ParticipantType extends AbstractType
+class ParticipantIdentifedType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -19,8 +19,6 @@ class ParticipantType extends AbstractType
             ->add('telephone')
             ->add('email')
             ->add('motpasse')
-            ->add('administrateur')
-            ->add('actif')
             ->add('campus')
             ->add('imageFile', FileType::class, [
                 'required' => false
