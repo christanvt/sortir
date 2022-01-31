@@ -35,8 +35,11 @@
 				</li>
 				{% if app.user %}
 					<li class="nav-item dropdown ms-2">
-						<img class="nav-link dropdown-toggle imgProfil" src="{{ vich_uploader_asset(app.user,'imageFile')|imagine_filter('accu')}}" width="40" height="auto" alt="Photo de profil" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-
+						{% if app.user.filename %}
+							<img class="nav-link dropdown-toggle imgProfil" src="{{ vich_uploader_asset(app.user,'imageFile')|imagine_filter('accu')}}" width="40" height="auto" alt="Photo de profil" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						{% else %}
+							<img class="nav-link dropdown-toggle imgProfil" src="{{ '/img/empty-avatar.jpeg'|imagine_filter('accu')}}" width="40" height="auto" alt="Photo de profil" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						{% endif %}
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<li>
 								<a class="dropdown-item" title="Login" href="{{ path('participant_my_profil') }}">mon profil</a>
