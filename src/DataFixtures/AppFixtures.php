@@ -3,14 +3,12 @@
 namespace App\DataFixtures;
 
 use Faker;
-use App\Entity\City;
 use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Ville;
 use App\Entity\Campus;
 use App\Entity\Sortie;
 use DateTimeImmutable;
-use App\Entity\Location;
 use App\Entity\Participant;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;

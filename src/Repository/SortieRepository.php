@@ -132,15 +132,15 @@ class SortieRepository extends ServiceEntityRepository
         $sortiesDuUser = array_column($result, "1");
 
         //inclure les sorties auxquelles je suis inscrit
-
-        if (!empty($searchData['subscribed_to'])){
-            $checkBoxesOr->add($qb->expr()->in('i', $sortiesDuUser));
+        if(count($sortiesDuUser) > 0) {
+            if (!empty($searchData['subscribed_to'])) {
+                $checkBoxesOr->add($qb->expr()->in('i', $sortiesDuUser));
+            }
+            //inclure les sorties auxquelles je ne suis pas inscrit
+            if (!empty($searchData['not_subscribed_to'])) {
+                $checkBoxesOr->add($qb->expr()->notIn('i', $sortiesDuUser));
+            }
         }
-        //inclure les sorties auxquelles je ne suis pas inscrit
-        if (!empty($searchData['not_subscribed_to'])){
-            $checkBoxesOr->add($qb->expr()->notIn('i', $sortiesDuUser));
-        }
-
         //inclure les sorties dont je suis l'organisateur
         if (!empty($searchData['is_organizer'])){
             $checkBoxesOr->add($qb->expr()->eq('s.organisateur', $user->getId()));
