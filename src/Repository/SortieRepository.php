@@ -54,7 +54,7 @@ class SortieRepository extends ServiceEntityRepository
      * @param array|null $searchData
      * @return array|mixed
      */
-    public function search(int $page = 1, int $numPerPage = 10,EntityManager $em, UserInterface $user, ?array $searchData)
+    public function search(int $page = 1, int $numPerPage = 10, UserInterface $user, ?array $searchData)
     {
         //un seul query builder, alias de sortie => s
         $qb = $this->createQueryBuilder('s');
