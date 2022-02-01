@@ -35,28 +35,36 @@ class LieuApiController extends AbstractController
         $villeRepo = $em->getRepository(Ville::class);
         $ville = $villeRepo->find($lieuData["ville"]);
 
-        //@TODO: gérer si on ne trouve pas la ville
+        if ($ville == null) {
+            $data = [
+                "status" => "error",
+                "lieu" => null
+            ];
+        } else {
+            //instancie notre Location et l'hydrate avec les données reçues
+            $lieu = new Lieu();
+            $lieu->setNom($lieuData["nom"]);
+            $lieu->setRue($lieuData["rue"]);
+            $lieu->setVille($ville);
+            if($lieuData["codePostal"] != $ville->getCodePostal()){
+                $lieu->getVille()->setCodePostal($ville->getCodePostal());
+            }else{
+                $lieu->getVille()->setCodePostal($lieuData["codePostal"]);
+            }
 
-        //instancie notre Location et l'hydrate avec les données reçues
-        $lieu = new Lieu();
-        $lieu->setNom($lieuData["nom"]);
-        $lieu->setRue($lieuData["rue"]);
-        $lieu->setVille($ville);
-        $lieu->getVille()->setCodePostal($lieuData["codePostal"]);
+            //sauvegarde en bdd
+            $em->persist($lieu);
+            $em->flush();
 
-        //sauvegarde en bdd
-        $em->persist($lieu);
-        $em->flush();
-
-        //les données à renvoyer au code JS
-        //status est arbitraire... mais je prend pour acquis que je renverrais toujours cette clé
-        //avec comme valeur soit "ok", soit "error", pour aider le traitement côté client
-        //je renvois aussi la Location. Pour que ça marche, j'ai implémenté \JsonSerializable dans l'entité, sinon c'est vide
-        $data = [
-            "status" => "ok",
-            "lieu" => $lieu
-        ];
-
+            //les données à renvoyer au code JS
+            //status est arbitraire... mais je prend pour acquis que je renverrais toujours cette clé
+            //avec comme valeur soit "ok", soit "error", pour aider le traitement côté client
+            //je renvois aussi la Location. Pour que ça marche, j'ai implémenté \JsonSerializable dans l'entité, sinon c'est vide
+            $data = [
+                "status" => "ok",
+                "lieu" => $lieu
+            ];
+        }
         //renvoie la réponse sous forme de données JSON
         //le bon Content-Type est automatiquement configuré par cet objet JsonResponse
         return new JsonResponse($data);
@@ -71,10 +79,9 @@ class LieuApiController extends AbstractController
         $cp = $request->query->get('codePostal');
         $villes = '';
 
-        if(strlen($cp) == 5) {
+        if (strlen($cp) == 5) {
             $villes = $villeRepo->findBy(['codePostal' => $cp], ['nom' => 'ASC']);
-        }
-        else if (strlen($cp) >= 2){
+        } else if (strlen($cp) >= 2) {
             $villes = $villeRepo->findByCodePostalStartWith($cp);
         }
 
@@ -87,16 +94,18 @@ class LieuApiController extends AbstractController
      */
     public function findCodePostalByVille(Request $request, VilleRepository $villeRepo)
     {
-         $idVille = $request->query->get('idVille');
-dump($idVille);
+        $idVille = $request->query->get('idVille');
 
-        if(strlen($idVille) > 0 && $idVille > 0) {
+        if (strlen($idVille) > 0 && $idVille > 0) {
             $ville = $villeRepo->find(['id' => $idVille]);
+            $data = [
+                "codePostal" => $ville->getCodePostal()
+            ];
+        } else {
+            $data = [
+                "codePostal" => 44
+            ];
         }
-        dump($ville);
-        $data = [
-            "codePostal" => $ville->getCodePostal()
-        ];
 
         //renvoie la réponse sous forme de données JSON
         //le bon Content-Type est automatiquement configuré par cet objet JsonResponse

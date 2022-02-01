@@ -79,16 +79,20 @@
             })
             // on reçoit le nouveau "Lieu" en response, avec son id
             .done(function(response){
-                // ajout d'une nouvelle balise <option>, ayant pour value l'id du lieu
-                var option = $("<option>").attr("value", response.lieu.id);
-                // injection du nom du lieu en contenu de la balise
-                option.html(response.lieu.nom);
-                // sélectionner la propriété afin qu'elle soit pré-selectionnée dans le select
-                option.prop('selected', true);
-                // ajoute dans le select (au début de la liste)
-                $("#sortie_lieu").prepend(option);
-                // fermeture de la fenêtre modale
-                $('#lieuModal').modal('hide');
+                if(response.status == 'ok'){
+                    // ajout d'une nouvelle balise <option>, ayant pour value l'id du lieu
+                    var option = $("<option>").attr("value", response.lieu.id);
+                    // injection du nom du lieu en contenu de la balise
+                    option.html(response.lieu.nom);
+                    // sélectionner la propriété afin qu'elle soit pré-selectionnée dans le select
+                    option.prop('selected', true);
+                    // ajoute dans le select (au début de la liste)
+                    $("#sortie_lieu").prepend(option);
+                    // fermeture de la fenêtre modale
+                    $('#lieuModal').modal('hide');
+                }else{
+                    alert("Ville inconnue, le lieu n'a pas été ajouté!")
+                }
             });
         });
     </script>
