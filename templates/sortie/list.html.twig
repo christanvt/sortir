@@ -65,13 +65,12 @@
                         <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">{{ sortie.isParticipant(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
                     {% elseif sortie.etat.libelle == 'CREEE' and sortie.organisateur == app.user %}
                         <a href="{{ path('sortie_publier', {'id': sortie.id}) }}">Publier</a>
-                        <a href="#">Modifier</a>
+                        <a href="{{ path('sortie_update', {'id': sortie.id}) }}">Modifier</a>
                     {% endif %}
                     {% if sortie.organisateur == app.user %}
-                        <form method="post" action="{{ path('sortie_annuler', {'id': sortie.id}) }}" onsubmit="return confirm('Veuillez confirmer l\'annulation, cette action est définitive!');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ sortie.id) }}">
-                            <button class="btn">Annuler</button>
-                        </form>
+                        {% if sortie.etat.libelle == 'OUVERTE' or sortie.etat.libelle == 'CREE' %}
+                            <a class="btn btn-danger" href="{{ path('sortie_annuler', {'id': sortie.id}) }}">Annuler</a>
+                        {% endif %}
                     {% endif %}
                 </td>
             </tr>

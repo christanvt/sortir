@@ -89,6 +89,10 @@ class Sortie
     private $campus;
 
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private ?string $motifAnnulation;
 
     public function __construct()
     {
@@ -263,6 +267,19 @@ class Sortie
     public function setCampus(?Campus $campus): self
     {
         $this->campus = $campus;
+
+        return $this;
+    }
+
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): self
+    {
+        $this->motifAnnulation = $motifAnnulation;
 
         return $this;
     }

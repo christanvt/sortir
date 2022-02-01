@@ -35,43 +35,36 @@ class LieuApiController extends AbstractController
         $villeRepo = $em->getRepository(Ville::class);
         $ville = $villeRepo->find($lieuData["ville"]);
 
-        //@TODO: gérer si on ne trouve pas la ville
+        if ($ville == null) {
+            $data = [
+                "status" => "error",
+                "lieu" => null
+            ];
+        } else {
+            //instancie notre Location et l'hydrate avec les données reçues
+            $lieu = new Lieu();
+            $lieu->setNom($lieuData["nom"]);
+            $lieu->setRue($lieuData["rue"]);
+            $lieu->setVille($ville);
+            if($lieuData["codePostal"] != $ville->getCodePostal()){
+                $lieu->getVille()->setCodePostal($ville->getCodePostal());
+            }else{
+                $lieu->getVille()->setCodePostal($lieuData["codePostal"]);
+            }
 
-        //instancie notre Location et l'hydrate avec les données reçues
-        $lieu = new Lieu();
-        $lieu->setNom($lieuData["nom"]);
-        $lieu->setRue($lieuData["rue"]);
-        $lieu->setVille($ville);
-        $lieu->getVille()->setCodePostal($lieuData["codePostal"]);
+            //sauvegarde en bdd
+            $em->persist($lieu);
+            $em->flush();
 
-        //récupère les coordonnées du lieu grâce à MapBox
-        //on appelle ici un service créé dans src/Geolocation/, afin de limiter la quantité de code dans le Controller
-        //et afin d'organiser correctement notre code
-        /*
-        $coordinates = $mapBoxHelper->getAddressCoordinates($lieu->getRue(),
-            $lieu->getVille()->getCodePostal(),
-            $ville->getNom());
-
-        //hydrate les coordonnées reçues dans l'entité
-        if (!empty($coordinates)){
-            $lieu->setLatitude($coordinates['lat']);
-            $lieu->setLongitude($coordinates['lng']);
+            //les données à renvoyer au code JS
+            //status est arbitraire... mais je prend pour acquis que je renverrais toujours cette clé
+            //avec comme valeur soit "ok", soit "error", pour aider le traitement côté client
+            //je renvois aussi la Location. Pour que ça marche, j'ai implémenté \JsonSerializable dans l'entité, sinon c'est vide
+            $data = [
+                "status" => "ok",
+                "lieu" => $lieu
+            ];
         }
-        */
-
-        //sauvegarde en bdd
-        $em->persist($lieu);
-        $em->flush();
-
-        //les données à renvoyer au code JS
-        //status est arbitraire... mais je prend pour acquis que je renverrais toujours cette clé
-        //avec comme valeur soit "ok", soit "error", pour aider le traitement côté client
-        //je renvois aussi la Location. Pour que ça marche, j'ai implémenté \JsonSerializable dans l'entité, sinon c'est vide
-        $data = [
-            "status" => "ok",
-            "lieu" => $lieu
-        ];
-
         //renvoie la réponse sous forme de données JSON
         //le bon Content-Type est automatiquement configuré par cet objet JsonResponse
         return new JsonResponse($data);
@@ -83,16 +76,39 @@ class LieuApiController extends AbstractController
      */
     public function findVillesByCodePostal(Request $request, VilleRepository $villeRepo)
     {
-        $cp= $request->query->get('codePostal');
+        $cp = $request->query->get('codePostal');
         $villes = '';
 
-        if(strlen($cp) == 5) {
+        if (strlen($cp) == 5) {
             $villes = $villeRepo->findBy(['codePostal' => $cp], ['nom' => 'ASC']);
-        }
-        else if (strlen($cp) >= 2){
+        } else if (strlen($cp) >= 2) {
             $villes = $villeRepo->findByCodePostalStartWith($cp);
         }
 
         return $this->render('lieu/ajax_villes_list.html.twig', ['villes' => $villes]);
+    }
+
+    /**
+     * Méthode appelée en AJAX seulement. Retourne le cp d'une ville.
+     * @Route("/codepostal/search", name="find_cp_by_ville")
+     */
+    public function findCodePostalByVille(Request $request, VilleRepository $villeRepo)
+    {
+        $idVille = $request->query->get('idVille');
+
+        if (strlen($idVille) > 0 && $idVille > 0) {
+            $ville = $villeRepo->find(['id' => $idVille]);
+            $data = [
+                "codePostal" => $ville->getCodePostal()
+            ];
+        } else {
+            $data = [
+                "codePostal" => 44
+            ];
+        }
+
+        //renvoie la réponse sous forme de données JSON
+        //le bon Content-Type est automatiquement configuré par cet objet JsonResponse
+        return new JsonResponse($data);
     }
 }
