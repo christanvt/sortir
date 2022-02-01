@@ -33,7 +33,7 @@ class AppFixtures extends Fixture
         $this->loadParticipants(10);
         $this->loadAdmin();
         $this->loadMeSebastienBaudin();
-        $this->loadSorties(5);
+        $this->loadSorties(25);
     }
 
     public function loadEtat(): void
@@ -237,6 +237,11 @@ class AppFixtures extends Fixture
     }
     public function loadSorties(int $count): void
     {
+        $faker = Faker\Factory::create('fr_FR');
+
+        $allOrgs = $this->manager->getRepository(Participant::class)->findAll();
+        $allLieux = $this->manager->getRepository(Lieu::class)->findAll();
+        $allEtats = $this->manager->getRepository(Etat::class)->findAll();
 
         for ($i = 0; $i < $count; $i++) {
 
@@ -244,13 +249,13 @@ class AppFixtures extends Fixture
             $nom = "sortie à ...";
             $infos = "Je vous donne rendez vous à ...";
             $dateHeureDébut = new DateTimeImmutable('now');
-            $durée = 3;
+            $durée = random_int(1,10);
             $dateLimitInscription = new DateTimeImmutable('yesterday');
-            $nbrMaxParticipants = 9;
-            $organisateur = $this->manager->getRepository(Participant::class)->findAll()[random_int(0, 9)];
-            $lieu = $this->manager->getRepository(Lieu::class)->findAll()[random_int(0, 1)];
+            $nbrMaxParticipants = random_int(2,24);
+            $organisateur = $faker->randomElement($allOrgs);
+            $lieu = $faker->randomElement($allLieux);
             $campus = $organisateur->getCampus();
-            $etat = $this->manager->getRepository(Etat::class)->findAll()[random_int(0, 6)];
+            $etat = $faker->randomElement($allEtats);
 
             $sortie
                 ->setNom($nom)
