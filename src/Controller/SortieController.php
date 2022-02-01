@@ -68,21 +68,23 @@ class SortieController extends AbstractController
 
         //@TODO temporaire à supprimer quand on se loguera pour de vrai
         $u = $this->getUser();
-        if($u==null) {
+        if ($u == null) {
             // parce que pour l'instant on ne se connecte pas au site avec un login
             // donc je feinte
             $u = $em->getRepository(Participant::class)->findOneBy(['email' => 'admin@admin.fr']);
         }
 
         //seuls les admins et l'auteur peuvent passer ici
-        if(!$this->isGranted("ROLE_ADMIN")) {
-            if ($sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
-                && $sortie->getOrganisateur() !== $u) {
+        if (!$this->isGranted("ROLE_ADMIN")) {
+            if (
+                $sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
+                && $sortie->getOrganisateur() !== $u
+            ) {
                 throw $this->createNotFoundException("Cette sortie n'existe pas encore !");
             }
         }
 
-        if (!$sortie){
+        if (!$sortie) {
             throw $this->createNotFoundException("Cette sortie n'existe pas !");
         }
 
@@ -110,13 +112,13 @@ class SortieController extends AbstractController
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()){
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             // donner l'état "créée" à cette sortie
             $sortie->setEtat($stateHelper->getEtatByNom(EtatChangeHelper::ETAT_CREEE));
 
             //on renseigne son auteur (le user actuel)
             $u = $this->getUser();
-            if($u==null) {
+            if ($u == null) {
                 // parce que pour l'instant on ne se connecte pas au site avec un login
                 // donc je feinte
                 $u = $em->getRepository(Participant::class)->findOneBy(['email' => 'admin@admin.fr']);
@@ -129,7 +131,7 @@ class SortieController extends AbstractController
             $em->flush();
 
             //si on publie directement, alors on redirige vers cette page de publication au lieu de dupliquer le code
-            if ($sortieForm->get('publierMaintenant')->getData() === true){
+            if ($sortieForm->get('publierMaintenant')->getData() === true) {
                 return $this->redirectToRoute('sortie_publier', ['id' => $sortie->getId()]);
             }
 
@@ -197,12 +199,12 @@ class SortieController extends AbstractController
     public function cancel(sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $etatHelper, Request $request)
     {
         //vérifie que la sortie n'est pas déjà annulée ou autre
-        if (!$etatHelper->peutEtreAnnulee($sortie)){
+        if (!$etatHelper->peutEtreAnnulee($sortie)) {
             $this->addFlash('warning', 'Cette sortie ne peut pas être annulée !');
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        if ($this->isCsrfTokenValid('annuler'.$sortie->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('annuler' . $sortie->getId(), $request->request->get('_token'))) {
             $etatHelper->changeEtatSortie($sortie, EtatChangeHelper::ETAT_ANNULEE);
             $em->persist($sortie);
             $em->flush();
@@ -210,6 +212,14 @@ class SortieController extends AbstractController
 
         $this->addFlash('success', 'La sortie a bien été annulée.');
         return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
-
+    }
+    /**
+     * @Route("/index", name="index", methods={"GET"})
+     */
+    public function index(SortieRepository $sortieRepository): Response
+    {
+        return $this->render('sortie/index.html.twig', [
+            'sorties' => $sortieRepository->findAll(),
+        ]);
     }
 }
