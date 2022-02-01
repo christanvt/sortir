@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\LieuType;
+use App\Form\SortieAnnulationType;
 use App\Form\SortieSearchType;
 use App\Form\SortieType;
 use App\Helper\EtatChangeHelper;
@@ -62,23 +63,17 @@ class SortieController extends AbstractController
     {
         $sortie = $sortieRepo->findWithJoins($id);
 
-        //@TODO temporaire à supprimer quand on se loguera pour de vrai
         $u = $this->getUser();
-        if($u==null) {
-            // parce que pour l'instant on ne se connecte pas au site avec un login
-            // donc je feinte
-            $u = $em->getRepository(Participant::class)->findOneBy(['email' => 'admin@admin.fr']);
-        }
 
         //seuls les admins et l'auteur peuvent passer ici
-        if(!$this->isGranted("ROLE_ADMIN")) {
+        if (!$this->isGranted("ROLE_ADMIN")) {
             if ($sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
                 && $sortie->getOrganisateur() !== $u) {
                 throw $this->createNotFoundException("Cette sortie n'existe pas encore !");
             }
         }
 
-        if (!$sortie){
+        if (!$sortie) {
             throw $this->createNotFoundException("Cette sortie n'existe pas !");
         }
 
@@ -86,12 +81,13 @@ class SortieController extends AbstractController
             'sortie' => $sortie,
         ]);
     }
+
     /**
      * Création d'une sortie
      *
      * @Route("/ajout", name="create")
      */
-    public function create(Request $request, EntityManagerInterface $em, EtatChangeHelper $stateHelper)
+    public function create(Request $request, EntityManagerInterface $em, EtatChangeHelper $stateHelper, SortieRepository $sortieRepo)
     {
         $sortie = new Sortie();
 
@@ -106,13 +102,13 @@ class SortieController extends AbstractController
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()){
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             // donner l'état "créée" à cette sortie
             $sortie->setEtat($stateHelper->getEtatByNom(EtatChangeHelper::ETAT_CREEE));
 
             //on renseigne son auteur (le user actuel)
             $u = $this->getUser();
-            if($u==null) {
+            if ($u == null) {
                 // parce que pour l'instant on ne se connecte pas au site avec un login
                 // donc je feinte
                 $u = $em->getRepository(Participant::class)->findOneBy(['email' => 'admin@admin.fr']);
@@ -125,7 +121,7 @@ class SortieController extends AbstractController
             $em->flush();
 
             //si on publie directement, alors on redirige vers cette page de publication au lieu de dupliquer le code
-            if ($sortieForm->get('publierMaintenant')->getData() === true){
+            if ($sortieForm->get('publierMaintenant')->getData() === true) {
                 return $this->redirectToRoute('sortie_publier', ['id' => $sortie->getId()]);
             }
 
@@ -138,7 +134,55 @@ class SortieController extends AbstractController
         $lieuForm = $this->createForm(LieuType::class);
 
         //on passe les 2 forms pour affichage
-        return $this->render('sortie/create.html.twig', [
+        return $this->render('sortie/create.html.twig', ['id' => 0,
+            'sortieForm' => $sortieForm->createView(),
+            'lieuForm' => $lieuForm->createView()
+        ]);
+    }
+
+    /**
+     * Modification d'une sortie
+     *
+     * @Route("/update/{id}", name="update")
+     */
+    public function update($id, Request $request, EntityManagerInterface $em, EtatChangeHelper $stateHelper, SortieRepository $sortieRepo)
+    {
+        $sortie = $sortieRepo->findWithJoins($id);
+        $u = $this->getUser();
+
+        //seuls les admins et l'auteur peuvent passer ici
+        if (!$this->isGranted("ROLE_ADMIN")) {
+            if ($sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
+                && $sortie->getOrganisateur() !== $u) {
+                throw $this->createNotFoundException("Vous n'êtes pas le créateur de cette sortie !");
+            }
+        }
+
+        if (!$sortie) {
+            throw $this->createNotFoundException("Cette sortie n'existe pas !");
+        }
+
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $sortieForm->handleRequest($request);
+
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            $em->persist($sortie);
+            $em->flush();
+
+            //si on publie directement, alors on redirige vers cette page de publication au lieu de dupliquer le code
+            if ($sortieForm->get('publierMaintenant')->getData() === true) {
+                return $this->redirectToRoute('sortie_publier', ['id' => $sortie->getId()]);
+            }
+
+            $this->addFlash('success', 'Vous venez de modifier la sortie !');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
+        }
+
+        //formulaire de lieu, pas traité ici ! Il est en effet soumis en ajax, vers une autre route
+        $lieuForm = $this->createForm(LieuType::class);
+
+        //on passe les 2 forms pour affichage
+        return $this->render('sortie/create.html.twig', ['id' => $sortie->getId(),
             'sortieForm' => $sortieForm->createView(),
             'lieuForm' => $lieuForm->createView()
         ]);
@@ -188,24 +232,33 @@ class SortieController extends AbstractController
 
 
     /**
-     * @Route("/{id}/annuler", name="annuler", methods={"POST"})
+     * @Route("/{id}/annuler", name="annuler")
      */
-    public function cancel(sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $etatHelper, Request $request)
+    public function annulation(sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $etatHelper, Request $request)
     {
         //vérifie que la sortie n'est pas déjà annulée ou autre
-        if (!$etatHelper->peutEtreAnnulee($sortie)){
+        if (!$etatHelper->peutEtreAnnulee($sortie)) {
             $this->addFlash('warning', 'Cette sortie ne peut pas être annulée !');
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        if ($this->isCsrfTokenValid('annuler'.$sortie->getId(), $request->request->get('_token'))) {
+        $annulationSortieForm = $this->createForm(SortieAnnulationType::class, $sortie);
+
+        $annulationSortieForm->handleRequest($request);
+
+        if ($annulationSortieForm->isSubmitted() && $annulationSortieForm->isValid()) {
+
             $etatHelper->changeEtatSortie($sortie, EtatChangeHelper::ETAT_ANNULEE);
             $em->persist($sortie);
             $em->flush();
+
+            $this->addFlash('success', 'La sortie a bien été annulée.');
+            return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-        $this->addFlash('success', 'La sortie a bien été annulée.');
-        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
-
+        return $this->render('sortie/annulation.html.twig', [
+            'sortie' => $sortie,
+            'annulationSortieForm' => $annulationSortieForm->createView()
+        ]);
     }
 }

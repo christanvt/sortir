@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annuler une sortie{% endblock %}
+
+{% block body %}
+    <div class="text-center mb-5 mt-5 pb-5">
+        <h1>Annuler une sortie</h1>
+    </div>
+    {{ form_start(annulationSortieForm) }}
+    <div class="row">
+        <div class="col-3"></div>
+        <div class=" col-6">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Nom de la sortie :</th>
+                    <td>{{ sortie.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Date de la sortie :</th>
+                    <td>{{ sortie.dateHeureDebut|date("d-m-Y à H:i") }}</td>
+                </tr>
+                <tr>
+                    <th>Campus :</th>
+                    <td>{{ sortie.campus.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Lieu :</th>
+                    <td>{{ sortie.lieu.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Motif : </th>
+                    <td>{{ form_row(annulationSortieForm.motifAnnulation) }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-3"></div>
+    </div>
+    <div class="row text-center">
+        <div class="col-12 mt-4">
+            <button class="btn btn-danger" type="submit">Enregistrer</button>
+            <a href="{{ app.request.headers.get('referer') }}" title="retour page précédente">
+                <button class="mx-3 px-4 py-2" type="button">Annuler</button>
+            </a>
+        </div>
+    </div>
+    {{ form_end(annulationSortieForm) }}
+
+{% endblock %}
+
+
+

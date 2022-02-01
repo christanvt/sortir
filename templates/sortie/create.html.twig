@@ -23,7 +23,12 @@
     {{ form_errors(sortieForm.lieu) }}
 
     <div class="mt-3">{{ form_row(sortieForm.publierMaintenant) }}</div>
-    <button class="btn btn-primary mt-3">Créer !</button>
+    {% if id>0 %}
+        <button class="btn btn-primary mt-3">Modifier !</button>
+    {% else %}
+        <button class="btn btn-primary mt-3">Créer !</button>
+    {% endif %}
+
 
     {{ form_end(sortieForm) }}
 
@@ -119,6 +124,42 @@
                 .done(function(response){
                    //console.log(response);
                    $("#lieu_ville").html(response);
+                });
+        });
+    </script>
+
+    <script>
+
+        /**
+         * Ce code gère la MAJ du code postal en fonction de la ville sélectionné
+         */
+
+        $("#lieu_ville").on("change", function(e){
+            //récupère la valeur selectionnée
+            let idVille = $("#lieu_ville").val();
+
+            if (idVille.length == 0){
+                return;
+            }
+            if (idVille < 0){
+                return;
+            }
+
+            //j'envoie les données au serveur en ajax
+            $.ajax({
+                // ATTENTION ne marche que parce que je ne suis pas dans un fichier js externe !!!
+                "url": "{{ path('lieu_find_cp_by_ville') }}",
+                // on prend toutes les données du formulaire et on les balance ...
+                "data": {
+                    'idVille': idVille
+                },
+                // ... en GET
+                "method": "get"
+            })
+                //sera appelée lorsque la requête est terminée
+                //je reçois un cp en response
+                .done(function(response){
+                    $("#lieu_codePostal").val(response.codePostal);
                 });
         });
     </script>

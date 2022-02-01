@@ -44,21 +44,6 @@ class LieuApiController extends AbstractController
         $lieu->setVille($ville);
         $lieu->getVille()->setCodePostal($lieuData["codePostal"]);
 
-        //récupère les coordonnées du lieu grâce à MapBox
-        //on appelle ici un service créé dans src/Geolocation/, afin de limiter la quantité de code dans le Controller
-        //et afin d'organiser correctement notre code
-        /*
-        $coordinates = $mapBoxHelper->getAddressCoordinates($lieu->getRue(),
-            $lieu->getVille()->getCodePostal(),
-            $ville->getNom());
-
-        //hydrate les coordonnées reçues dans l'entité
-        if (!empty($coordinates)){
-            $lieu->setLatitude($coordinates['lat']);
-            $lieu->setLongitude($coordinates['lng']);
-        }
-        */
-
         //sauvegarde en bdd
         $em->persist($lieu);
         $em->flush();
@@ -83,7 +68,7 @@ class LieuApiController extends AbstractController
      */
     public function findVillesByCodePostal(Request $request, VilleRepository $villeRepo)
     {
-        $cp= $request->query->get('codePostal');
+        $cp = $request->query->get('codePostal');
         $villes = '';
 
         if(strlen($cp) == 5) {
@@ -94,5 +79,27 @@ class LieuApiController extends AbstractController
         }
 
         return $this->render('lieu/ajax_villes_list.html.twig', ['villes' => $villes]);
+    }
+
+    /**
+     * Méthode appelée en AJAX seulement. Retourne le cp d'une ville.
+     * @Route("/codepostal/search", name="find_cp_by_ville")
+     */
+    public function findCodePostalByVille(Request $request, VilleRepository $villeRepo)
+    {
+         $idVille = $request->query->get('idVille');
+dump($idVille);
+
+        if(strlen($idVille) > 0 && $idVille > 0) {
+            $ville = $villeRepo->find(['id' => $idVille]);
+        }
+        dump($ville);
+        $data = [
+            "codePostal" => $ville->getCodePostal()
+        ];
+
+        //renvoie la réponse sous forme de données JSON
+        //le bon Content-Type est automatiquement configuré par cet objet JsonResponse
+        return new JsonResponse($data);
     }
 }
