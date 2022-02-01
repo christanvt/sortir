@@ -64,12 +64,6 @@ class SortieController extends AbstractController
         $sortie = $sortieRepo->findWithJoins($id);
 
         $u = $this->getUser();
-<<<<<<< HEAD
-        if ($u == null) {
-            // parce que pour l'instant on ne se connecte pas au site avec un login
-            // donc je feinte
-            $u = $em->getRepository(Participant::class)->findOneBy(['email' => 'admin@admin.fr']);
-        }
 
         //seuls les admins et l'auteur peuvent passer ici
         if (!$this->isGranted("ROLE_ADMIN")) {
@@ -77,13 +71,6 @@ class SortieController extends AbstractController
                 $sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
                 && $sortie->getOrganisateur() !== $u
             ) {
-=======
-
-        //seuls les admins et l'auteur peuvent passer ici
-        if (!$this->isGranted("ROLE_ADMIN")) {
-            if ($sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
-                && $sortie->getOrganisateur() !== $u) {
->>>>>>> 9ade3c107cca313ccfa4be18ebe79d719ec1480d
                 throw $this->createNotFoundException("Cette sortie n'existe pas encore !");
             }
         }
@@ -149,7 +136,8 @@ class SortieController extends AbstractController
         $lieuForm = $this->createForm(LieuType::class);
 
         //on passe les 2 forms pour affichage
-        return $this->render('sortie/create.html.twig', ['id' => 0,
+        return $this->render('sortie/create.html.twig', [
+            'id' => 0,
             'sortieForm' => $sortieForm->createView(),
             'lieuForm' => $lieuForm->createView()
         ]);
@@ -167,8 +155,10 @@ class SortieController extends AbstractController
 
         //seuls les admins et l'auteur peuvent passer ici
         if (!$this->isGranted("ROLE_ADMIN")) {
-            if ($sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
-                && $sortie->getOrganisateur() !== $u) {
+            if (
+                $sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
+                && $sortie->getOrganisateur() !== $u
+            ) {
                 throw $this->createNotFoundException("Vous n'êtes pas le créateur de cette sortie !");
             }
         }
@@ -197,7 +187,8 @@ class SortieController extends AbstractController
         $lieuForm = $this->createForm(LieuType::class);
 
         //on passe les 2 forms pour affichage
-        return $this->render('sortie/create.html.twig', ['id' => $sortie->getId(),
+        return $this->render('sortie/create.html.twig', [
+            'id' => $sortie->getId(),
             'sortieForm' => $sortieForm->createView(),
             'lieuForm' => $lieuForm->createView()
         ]);
@@ -257,32 +248,16 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
 
-<<<<<<< HEAD
-        if ($this->isCsrfTokenValid('annuler' . $sortie->getId(), $request->request->get('_token'))) {
-=======
         $annulationSortieForm = $this->createForm(SortieAnnulationType::class, $sortie);
 
         $annulationSortieForm->handleRequest($request);
 
         if ($annulationSortieForm->isSubmitted() && $annulationSortieForm->isValid()) {
 
->>>>>>> 9ade3c107cca313ccfa4be18ebe79d719ec1480d
             $etatHelper->changeEtatSortie($sortie, EtatChangeHelper::ETAT_ANNULEE);
             $em->persist($sortie);
             $em->flush();
 
-<<<<<<< HEAD
-        $this->addFlash('success', 'La sortie a bien été annulée.');
-        return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
-    }
-    /**
-     * @Route("/index", name="index", methods={"GET"})
-     */
-    public function index(SortieRepository $sortieRepository): Response
-    {
-        return $this->render('sortie/index.html.twig', [
-            'sorties' => $sortieRepository->findAll(),
-=======
             $this->addFlash('success', 'La sortie a bien été annulée.');
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
         }
@@ -290,7 +265,6 @@ class SortieController extends AbstractController
         return $this->render('sortie/annulation.html.twig', [
             'sortie' => $sortie,
             'annulationSortieForm' => $annulationSortieForm->createView()
->>>>>>> 9ade3c107cca313ccfa4be18ebe79d719ec1480d
         ]);
     }
 }
