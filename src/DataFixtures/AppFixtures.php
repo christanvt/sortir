@@ -32,6 +32,7 @@ class AppFixtures extends Fixture
         $this->loadCampus();
         $this->loadParticipants(20);
         $this->loadAdmin();
+        $this->loadDevUser();
         $this->loadSebastienBaudin();
         $this->loadSorties(50);
     }
