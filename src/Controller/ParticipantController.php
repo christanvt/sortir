@@ -2,15 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Event;
 use App\Entity\Sortie;
 use App\Entity\Participant;
-use Doctrine\ORM\Mapping\Id;
 use App\Form\ParticipantType;
 use App\Helper\EtatChangeHelper;
-use App\Entity\EventSubscription;
 use App\Form\ParticipantPhotoType;
-use App\EventState\EventStateHelper;
 use App\Form\ParticipantMotpasseType;
 use App\Form\ParticipantIdentifedType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,12 +14,9 @@ use App\Repository\ParticipantRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use PHPUnit\Framework\MockObject\Rule\Parameters;
-use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/participant")
@@ -93,10 +86,12 @@ class ParticipantController extends AbstractController
             $user == $participant //Si l'user est celui du edit
         ) {
             $form = $this->createForm(ParticipantIdentifedType::class, $participant);
+            $title = "Modifier mes infos personnelles";
         } elseif (
             $this->isGranted('ROLE_ADMIN') //Si l'admin veut edit
         ) {
             $form = $this->createForm(ParticipantType::class, $participant);
+            $title = "Modifier les infos personnelles du membre " . $participant->getPseudo();
         } else {
             throw new AccessDeniedException();
         };
@@ -111,6 +106,7 @@ class ParticipantController extends AbstractController
         return $this->renderForm('participant/edit.html.twig', [
             'participant' => $participant,
             'form' => $form,
+            'title' => $title,
         ]);
     }
     /**
@@ -123,10 +119,13 @@ class ParticipantController extends AbstractController
             $user == $participant //Si l'user est celui du edit
         ) {
             $form = $this->createForm(ParticipantPhotoType::class, $participant);
+            $title = "Modifier ma photo de profil";
         } elseif (
             $this->isGranted('ROLE_ADMIN') //Si l'admin veut edit
+
         ) {
             $form = $this->createForm(ParticipantPhotoType::class, $participant);
+            $title = "Modifier la photo du profil du membre " . $participant->getPseudo();
         } else {
             throw new AccessDeniedException();
         };
@@ -141,6 +140,8 @@ class ParticipantController extends AbstractController
         return $this->renderForm('participant/edit.html.twig', [
             'participant' => $participant,
             'form' => $form,
+            'title' => $title,
+
         ]);
     }
     /**
@@ -153,10 +154,12 @@ class ParticipantController extends AbstractController
             $user == $participant //Si l'user est celui du edit
         ) {
             $form = $this->createForm(ParticipantMotpasseType::class, $participant);
+            $title = "Modifier mon mot de passe";
         } elseif (
             $this->isGranted('ROLE_ADMIN') //Si l'admin veut edit
         ) {
             $form = $this->createForm(ParticipantMotpasseType::class, $participant);
+            $title = "Modifier le mot de passe du membre " . $participant->getPseudo();
         } else {
             throw new AccessDeniedException();
         };
@@ -176,6 +179,8 @@ class ParticipantController extends AbstractController
         return $this->renderForm('participant/edit.html.twig', [
             'participant' => $participant,
             'form' => $form,
+            'title' => $title,
+
         ]);
     }
 
