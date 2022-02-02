@@ -57,19 +57,20 @@
 			</table>
 		</div>
 	</div>
+
 	<div class="row text-center">
 		<div class="col-12 mt-4">
-			<a href="{{ path('participant_edit_photo', {'id': participant.id}) }}" title="éditer profil">
-				<button class="mx-3 px-4 py-2">Modifier ma photo de profil</button>
-			</a>
-			<a href="{{ path('participant_edit', {'id': participant.id}) }}" title="éditer profil">
-				<button class="mx-3 px-4 py-2">Modifier mes informations personnelles</button>
-			</a>
-			<a href="{{ path('participant_edit_motpasse', {'id': participant.id}) }}" title="éditer profil">
-				<button class="mx-3 px-4 py-2">Modifier mon mot de passe</button>
-			</a>
-
-
+			{% if app.user.id == participant.id or is_granted('ROLE_ADMIN') %}
+				<a href="{{ path('participant_edit_photo', {'id': participant.id}) }}" title="éditer profil">
+					<button class="mx-3 px-4 py-2">Modifier ma photo de profil</button>
+				</a>
+				<a href="{{ path('participant_edit', {'id': participant.id}) }}" title="éditer profil">
+					<button class="mx-3 px-4 py-2">Modifier mes informations personnelles</button>
+				</a>
+				<a href="{{ path('participant_edit_motpasse', {'id': participant.id}) }}" title="éditer profil">
+					<button class="mx-3 px-4 py-2">Modifier mon mot de passe</button>
+				</a>
+			{% endif %}
 			<a href="{{ path('main_home') }}" title="accueil">
 				<button class="mx-3 px-4 py-2">Retour</button>
 			</a>
@@ -83,5 +84,4 @@
 			</div>
 		{% endif %}
 	</div>
-
 {% endblock %}
