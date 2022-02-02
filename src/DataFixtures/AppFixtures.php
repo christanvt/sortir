@@ -28,12 +28,12 @@ class AppFixtures extends Fixture
         $this->manager = $manager;
         $this->loadEtat();
         $this->loadVilles();
-        $this->loadLieux(2);
+        $this->loadLieux(20);
         $this->loadCampus();
-        $this->loadParticipants(10);
+        $this->loadParticipants(20);
         $this->loadAdmin();
-        $this->loadMeSebastienBaudin();
-        $this->loadSorties(5);
+        $this->loadSebastienBaudin();
+        $this->loadSorties(50);
     }
 
     public function loadEtat(): void
@@ -167,7 +167,7 @@ class AppFixtures extends Fixture
         $this->manager->flush();
     }
 
-    public function loadMeSebastienBaudin(): void
+    public function loadSebastienBaudin(): void
     {
         $participant = new Participant;
         $nom = "Baudin";
