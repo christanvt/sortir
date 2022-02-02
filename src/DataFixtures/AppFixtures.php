@@ -236,6 +236,41 @@ class AppFixtures extends Fixture
         $this->manager->persist($participant);
         $this->manager->flush();
     }
+    public function loadDevUser(): void
+    {
+        $participant = new Participant;
+        $nom = "user";
+        $prenom = "user";
+        $pseudo = "user";
+        $administrateur = 0;
+        $actif = 1;
+        $telephone = "0123456789";
+        $email = "user@user.fr";
+        $nomCampus = "SAINT-HERBLAIN";
+        $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
+        $password = $this->encoder->hashPassword($participant, 'user');
+        $content = file_get_contents("https://www.lense.fr/wp-content/uploads/2014/06/steve-jobs-albert-watson-bw.jpg");
+        $filename = "image.jpg";
+        $fp = fopen("./public/img/profils/" . $filename, "w");
+        fwrite($fp, $content);
+        fclose($fp);
+        $date = new DateTimeImmutable('now');
+        $participant
+            ->setNom($nom)
+            ->setPrenom($prenom)
+            ->setPseudo($pseudo)
+            ->setAdministrateur($administrateur)
+            ->setActif($actif)
+            ->setTelephone($telephone)
+            ->setEmail($email)
+            ->setCampus($campus)
+            ->setMotpasse($password)
+            ->setFilename($filename)
+            ->setUpdatedAt($date);
+        $this->manager->persist($participant);
+        $this->manager->flush();
+    }
+
     public function loadSorties(int $count): void
     {
         $faker = Faker\Factory::create('fr_FR');
