@@ -63,15 +63,19 @@ class AppFixtures extends Fixture
         $stmt = $connection->prepare(file_get_contents(__DIR__ . "/villes_fr.sql"));
         $stmt->execute();
     }
+
+
     public function loadLieux(int $num): void
     {
-        $faker = Faker\Factory::create('fr_FR');
-        $allVilles = $this->manager->getRepository(Ville::class)->findAll();
+        $ville = $this->manager->getRepository(Ville::class)->findOneBy(['nom' => "Nantes"]);
+
         for ($i = 0; $i < $num; $i++) {
             $lieu = new Lieu();
-            $lieu->setNom('Guinguette chez ' . $faker->name());
-            $lieu->setRue($faker->streetName);
-            $lieu->setVille($faker->randomElement($allVilles));
+            $lieu->setNom("L'Hâchez-vous")
+                ->setRue("Parc du Moulin Neuf, 15 Av. Jacques Cartier ")
+                ->setVille($ville)
+                ->setLatitude(47.25038459106548)
+                ->setLongitude(-1.6436333992611676);
             $this->manager->persist($lieu);
         }
         $this->manager->flush();
