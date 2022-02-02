@@ -8,17 +8,12 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ParticipantIdentifedType extends AbstractType
+class ParticipantMotpasseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('pseudo')
-            ->add('prenom')
-            ->add('nom')
-            ->add('telephone')
-            ->add('email')
-            ->add('campus');
+            ->add('motpasse');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

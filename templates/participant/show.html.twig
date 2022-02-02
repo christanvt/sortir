@@ -5,72 +5,82 @@
 
 {% block body %}
 	<div class="text-center mb-5 mt-5 pb-5">
-		<h1>Profil - {{ participant.pseudo }}</h1>
+		<h1>Profil -
+			{{ participant.pseudo }}</h1>
 	</div>
 	<div class="row">
 		<div class="col-4 text-center">
 			{% if participant.filename %}
 				<img src="{{ vich_uploader_asset(participant,'imageFile')}}" width="100" alt="{{ participant.pseudo }}">
 			{% else %}
-				<img src="{{ asset('/build/img/profils/empty_avatar.ed8c92ea.jpeg')}}" width="100" alt="{{ participant.pseudo }}">
+				<img src="{{ asset('/build/img/empty_avatar.jpeg')}}" width="100" alt="{{ participant.pseudo }}">
 			{% endif %}
 		</div>
 		<div class="col-6">
 			<table class="table">
 				<tbody>
-				<tr>
-					<th>Pseudo</th>
-					<td>{{ participant.pseudo }}</td>
-				</tr>
-				<tr>
-					<th>Email</th>
-					<td>{{ participant.email }}</td>
-				</tr>
-				<tr>
-					<th>Nom</th>
-					<td>{{ participant.nom }}</td>
-				</tr>
-				<tr>
-					<th>Pr&eacute;nom</th>
-					<td>{{ participant.prenom }}</td>
-				</tr>
-				<tr>
-					<th>T&eacute;l&eacute;phone</th>
-					<td>{{ participant.telephone }}</td>
-				</tr>
-				{% if is_granted('ROLE_ADMIN') %}
 					<tr>
-						<th>Mot de passe</th>
-						<td>{{ participant.motpasse }}</td>
+						<th>Pseudo</th>
+						<td>{{ participant.pseudo }}</td>
 					</tr>
 					<tr>
-						<th>Administrateur</th>
-						<td>{{ participant.administrateur ? 'Yes' : 'No' }}</td>
+						<th>Email</th>
+						<td>{{ participant.email }}</td>
 					</tr>
 					<tr>
-						<th>Actif</th>
-						<td>{{ participant.actif ? 'Yes' : 'No' }}</td>
+						<th>Nom</th>
+						<td>{{ participant.nom }}</td>
 					</tr>
-				{% endif %}
+					<tr>
+						<th>Pr&eacute;nom</th>
+						<td>{{ participant.prenom }}</td>
+					</tr>
+					<tr>
+						<th>T&eacute;l&eacute;phone</th>
+						<td>{{ participant.telephone }}</td>
+					</tr>
+					{% if is_granted('ROLE_ADMIN') %}
+						<tr>
+							<th>Mot de passe</th>
+							<td>{{ participant.motpasse }}</td>
+						</tr>
+						<tr>
+							<th>Administrateur</th>
+							<td>{{ participant.administrateur ? 'Yes' : 'No' }}</td>
+						</tr>
+						<tr>
+							<th>Actif</th>
+							<td>{{ participant.actif ? 'Yes' : 'No' }}</td>
+						</tr>
+					{% endif %}
 				</tbody>
 			</table>
 		</div>
 	</div>
 	<div class="row text-center">
 		<div class="col-12 mt-4">
-			<a href="{{ path('participant_edit', {'id': participant.id}) }}" title="éditer profil">
-				<button class="mx-3 px-4 py-2">Modifier</button>
+			<a href="{{ path('participant_edit_photo', {'id': participant.id}) }}" title="éditer profil">
+				<button class="mx-3 px-4 py-2">Modifier ma photo de profil</button>
 			</a>
+			<a href="{{ path('participant_edit', {'id': participant.id}) }}" title="éditer profil">
+				<button class="mx-3 px-4 py-2">Modifier mes informations personnelles</button>
+			</a>
+			<a href="{{ path('participant_edit_motpasse', {'id': participant.id}) }}" title="éditer profil">
+				<button class="mx-3 px-4 py-2">Modifier mon mot de passe</button>
+			</a>
+
+
 			<a href="{{ path('main_home') }}" title="accueil">
 				<button class="mx-3 px-4 py-2">Retour</button>
 			</a>
 		</div>
 		{% if is_granted('ROLE_ADMIN') %}
-		<div class="col-12 mt-4">
-			<a href="{{ path('participant_index') }}" title="Retour à la liste des profils">
-				<button class="mx-3 px-4 py-2">Retour à la liste</button></a>
-			{{ include('participant/_delete_form.html.twig') }}
-		</div>
+			<div class="col-12 mt-4">
+				<a href="{{ path('participant_index') }}" title="Retour à la liste des profils">
+					<button class="mx-3 px-4 py-2">Retour à la liste</button>
+				</a>
+				{{ include('participant/_delete_form.html.twig') }}
+			</div>
 		{% endif %}
 	</div>
 

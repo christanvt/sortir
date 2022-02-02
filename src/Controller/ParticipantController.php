@@ -5,20 +5,22 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\Sortie;
 use App\Entity\Participant;
+use Doctrine\ORM\Mapping\Id;
 use App\Form\ParticipantType;
 use App\Helper\EtatChangeHelper;
 use App\Entity\EventSubscription;
+use App\Form\ParticipantPhotoType;
 use App\EventState\EventStateHelper;
+use App\Form\ParticipantMotpasseType;
 use App\Form\ParticipantIdentifedType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ParticipantRepository;
-use Doctrine\ORM\Mapping\Id;
-use PHPUnit\Framework\MockObject\Rule\Parameters;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use PHPUnit\Framework\MockObject\Rule\Parameters;
 use Symfony\Component\DependencyInjection\Parameter;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -93,6 +95,66 @@ class ParticipantController extends AbstractController
             $this->isGranted('ROLE_ADMIN') //Si l'admin veut edit
         ) {
             $form = $this->createForm(ParticipantType::class, $participant);
+        } else {
+            throw new AccessDeniedException();
+        };
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('participant_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('participant/edit.html.twig', [
+            'participant' => $participant,
+            'form' => $form,
+        ]);
+    }
+    /**
+     * @Route("/{id}/edit/photo", name="participant_edit_photo", methods={"GET", "POST"})
+     */
+    public function editPhoto(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        if (
+            $user == $participant //Si l'user est celui du edit
+        ) {
+            $form = $this->createForm(ParticipantPhotoType::class, $participant);
+        } elseif (
+            $this->isGranted('ROLE_ADMIN') //Si l'admin veut edit
+        ) {
+            $form = $this->createForm(ParticipantPhotoType::class, $participant);
+        } else {
+            throw new AccessDeniedException();
+        };
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('participant_show', ['id' => $participant->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('participant/edit.html.twig', [
+            'participant' => $participant,
+            'form' => $form,
+        ]);
+    }
+    /**
+     * @Route("/{id}/edit/motdepasse", name="participant_edit_motpasse", methods={"GET", "POST"})
+     */
+    public function editMotDePasse(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        if (
+            $user == $participant //Si l'user est celui du edit
+        ) {
+            $form = $this->createForm(ParticipantMotpasseType::class, $participant);
+        } elseif (
+            $this->isGranted('ROLE_ADMIN') //Si l'admin veut edit
+        ) {
+            $form = $this->createForm(ParticipantMotpasseType::class, $participant);
         } else {
             throw new AccessDeniedException();
         };
