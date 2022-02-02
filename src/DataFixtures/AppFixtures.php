@@ -237,9 +237,11 @@ class AppFixtures extends Fixture
     }
     public function loadSorties(int $count): void
     {
-
+        $faker = Faker\Factory::create('fr_FR');
+        $allOganisateurs = $this->manager->getRepository(Participant::class)->findAll();
+        $allLieux = $this->manager->getRepository(Lieu::class)->findAll();
+        $allEtats = $this->manager->getRepository(Etat::class)->findAll();
         for ($i = 0; $i < $count; $i++) {
-
             $sortie = new Sortie;
             $nom = "sortie à ...";
             $infos = "Je vous donne rendez vous à ...";
@@ -247,11 +249,10 @@ class AppFixtures extends Fixture
             $durée = 3;
             $dateLimitInscription = new DateTimeImmutable('yesterday');
             $nbrMaxParticipants = 9;
-            $organisateur = $this->manager->getRepository(Participant::class)->findAll()[random_int(0, 9)];
-            $lieu = $this->manager->getRepository(Lieu::class)->findAll()[random_int(0, 1)];
+            $organisateur = $faker->randomElement($allOganisateurs);
+            $lieu = $faker->randomElement($allLieux);
             $campus = $organisateur->getCampus();
-            $etat = $this->manager->getRepository(Etat::class)->findAll()[random_int(0, 6)];
-
+            $etat = $faker->randomElement($allEtats);
             $sortie
                 ->setNom($nom)
                 ->setInfosSortie($infos)
