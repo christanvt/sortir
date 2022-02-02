@@ -31,44 +31,46 @@ class SortieSearchType extends AbstractType
             //ce formulaire est en get
             ->setMethod('get')
             ->add('campus', EntityType::class, [
-                'label' => 'Site',
+                'label' => 'Campus',
                 'class' => Campus::class,
                 'choice_label' => 'nom',
                 'required' => false,
             ])
             ->add('keyword', SearchType::class, [
-                'label' => 'Mots-clefs',
+                'label' => 'Le nom de la sortie contient :',
                 'required' => false,
             ])
             ->add('start_at_min_date', DateType::class, [
-                'label' => 'Entre le',
+                'label' => 'Entre',
                 'required' => true,
                 'html5' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'datepicker'],
                 'format' => 'dd/MM/yyyy'
             ])
             ->add('start_at_max_date', DateType::class, [
-                'label' => 'Et le',
+                'label' => 'et',
                 'required' => true,
                 'html5' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'datepicker'],
                 'format' => 'dd/MM/yyyy'
             ])
             ->add('is_organizer', CheckboxType::class, [
-                'label' => "Sorties dont je suis l'organisateur",
+                'label' => "Sorties dont je suis l'organisateur/trice",
                 'required' => false,
             ])
             ->add('subscribed_to', CheckboxType::class, [
-                'label' => 'Sorties auxquelles je suis inscrit',
+                'label' => 'Sorties auxquelles je suis inscrit/e',
                 'required' => false,
             ])
             ->add('not_subscribed_to', CheckboxType::class, [
-                'label' => 'Sorties auxquelles je ne suis pas inscrit',
+                'label' => 'Sorties auxquelles je ne suis pas inscrit/e',
                 'required' => false,
             ])
-            ->add('submit', SubmitType::class, ['label' => 'GO'])
+            ->add('gone', CheckboxType::class, [
+                'label' => 'Sorties passées',
+                'required' => false,
+            ])
+            ->add('submit', SubmitType::class, ['label' => 'Rechercher'])
         ;
     }
 

@@ -3,29 +3,56 @@
 {% block title %}Les sorties{% endblock %}
 
 {% block body %}
-    <h2>Les sorties</h2>
+    <div class="mt-1 d-flex justify-content-end">
+        <div class="font-weight-bold">
+            Date du jour : {{ 'now' | date('d/m/Y') }}
+            <br>
+            Participant : {{ app.user.nom }} {{ app.user.prenom | first|upper}}.
+        </div>
+    </div>
+    <h2>Filtrer les sorties</h2>
 
     <div class="container ml-0 mr-0 pl-0 pr-0">
-            {{ form_start(searchForm, {'attr': {'class': 'row'}}) }}
-            <div class="col col-sm-3 d-flex flex-column justify-content-end">
+
+        {{ form_start(searchForm, {'attr': {'class': 'row'}}) }}
+
+        <div class="col-sm-6">
+
+            <span style="white-space: nowrap">
                 {{ form_row(searchForm.campus, {attr: {class: 'form-control-sm'}}) }}
+            </span>
+
+            <span style="white-space: nowrap">
                 {{ form_row(searchForm.keyword, {attr: {class: 'form-control-sm'}}) }}
+            </span>
+
+            <div class="row">
+                <div class="col col-sm-4">
+                    {{ form_row(searchForm.start_at_min_date, {attr: {class: 'form-control-sm datepicker'}}) }}
+                </div>
+                <div class="col col-sm-4">
+                    {{ form_row(searchForm.start_at_max_date, {attr: {class: 'form-control-sm datepicker'}}) }}
+                </div>
             </div>
-            <div class="col col-sm-3 d-flex flex-column justify-content-end">
-                {{ form_row(searchForm.start_at_min_date, {attr: {class: 'form-control-sm'}}) }}
-                {{ form_row(searchForm.start_at_max_date, {attr: {class: 'form-control-sm'}}) }}
+
+        </div>
+
+        <div class="col-sm-4">
+            {{ form_row(searchForm.is_organizer) }}
+            {{ form_row(searchForm.subscribed_to) }}
+            {{ form_row(searchForm.not_subscribed_to) }}
+            {{ form_row(searchForm.gone) }}
+        </div>
+
+        <div class="col-sm-2 d-flex flex-column">
+            <div class="mt-auto">
+            {{ form_row(searchForm.submit, {attr: {class: 'btn-primary'}}) }}
             </div>
-            <div class="col col-sm-4 d-flex flex-column justify-content-start sortie-filters-checkboxes">
-                <h5>Inclure...</h5>
-                {{ form_row(searchForm.is_organizer) }}
-                {{ form_row(searchForm.subscribed_to) }}
-                {{ form_row(searchForm.not_subscribed_to) }}
-            </div>
-            <div class="col col-sm d-flex flex-column justify-content-end">
-                {{ form_row(searchForm.submit) }}
-            </div>
-            {{ form_end(searchForm) }}
+        </div>
     </div>
+
+    {{ form_end(searchForm) }}
+
 
     <div class="sortie-pagination">
         {{ knp_pagination_render(paginationSortie) }}
@@ -43,45 +70,48 @@
                 <th class="d-none d-lg-table-cell">Organisateur</th>
                 <th>Action</th>
             </tr>
-        {% for sortie in paginationSortie %}
-            <tr>
-                <td><a href="{{ path('sortie_detail', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
-                <td class="d-none d-md-table-cell">{{ sortie.dateHeureDebut|date("d/m/Y H:i") }}</td>
-                <td class="d-none d-md-table-cell">{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
-                <td class="d-none d-md-table-cell">{{ sortie.nbInscriptionsMax - sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}</td>
-                <td>{{ sortie.etat.libelle }}</td>
-                {% if sortie.isParticipant(app.user) %}
-                    <td class="d-none d-md-table-cell">X</td>
-                {% else %}
-                    <td class="d-none d-md-table-cell">&nbsp;</td>
-                {% endif %}
-                <td class="d-none d-lg-table-cell">
-                    {% if sortie.organisateur.actif %}
-                        <a href="{{ path('participant_edit', {id: sortie.organisateur.id}) }}" title="Voir son profil">{{ sortie.organisateur.nom ~ " " ~ sortie.organisateur.prenom|first }} ({{ sortie.organisateur.campus.nom }})</a>
+            {% for sortie in paginationSortie %}
+                <tr>
+                    <td><a href="{{ path('sortie_detail', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
+                    <td class="d-none d-md-table-cell">{{ sortie.dateHeureDebut|date("d/m/Y H:i") }}</td>
+                    <td class="d-none d-md-table-cell">{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
+                    <td class="d-none d-md-table-cell">{{ sortie.nbInscriptionsMax - sortie.participants|length }}
+                        / {{ sortie.nbInscriptionsMax }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    {% if sortie.isParticipant(app.user) %}
+                        <td class="d-none d-md-table-cell">X</td>
                     {% else %}
-                        anonyme
+                        <td class="d-none d-md-table-cell">&nbsp;</td>
                     {% endif %}
-                </td>
-                <td>
-                    <a href="{{ path('sortie_detail', {'id': sortie.id}) }}">Afficher</a>
-                    {% if userHlp.peutSinscrireASortie(app.user, sortie) %}
-                        <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">S'inscrire</a>
-                    {% endif %}
-                    {% if userHlp.peutSeDesinscrireASortie(app.user, sortie) %}
-                        <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">Se désister</a>
-                    {% endif %}
-                    {% if sortieHlp.peutEtrePublie(sortie, app.user) %}
-                        <a href="{{ path('sortie_publier', {'id': sortie.id}) }}">Publier</a>
-                    {% endif %}
-                    {% if sortieHlp.peutEtreModifie(sortie, app.user) %}
-                        <a href="{{ path('sortie_update', {'id': sortie.id}) }}">Modifier</a>
-                    {% endif %}
-                    {% if sortieHlp.peutEtreAnnule(sortie, app.user) %}
-                        <a class="btn btn-danger" href="{{ path('sortie_annuler', {'id': sortie.id}) }}">Annuler</a>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
+                    <td class="d-none d-lg-table-cell">
+                        {% if sortie.organisateur.actif %}
+                            <a href="{{ path('participant_edit', {id: sortie.organisateur.id}) }}"
+                               title="Voir son profil">{{ sortie.organisateur.nom ~ " " ~ sortie.organisateur.prenom|first }}
+                                ({{ sortie.organisateur.campus.nom }})</a>
+                        {% else %}
+                            anonyme
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('sortie_detail', {'id': sortie.id}) }}">Afficher</a>
+                        {% if userHlp.peutSinscrireASortie(app.user, sortie) %}
+                            <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">S'inscrire</a>
+                        {% endif %}
+                        {% if userHlp.peutSeDesinscrireASortie(app.user, sortie) %}
+                            <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">Se désister</a>
+                        {% endif %}
+                        {% if sortieHlp.peutEtrePublie(sortie, app.user) %}
+                            <a href="{{ path('sortie_publier', {'id': sortie.id}) }}">Publier</a>
+                        {% endif %}
+                        {% if sortieHlp.peutEtreModifie(sortie, app.user) %}
+                            <a href="{{ path('sortie_update', {'id': sortie.id}) }}">Modifier</a>
+                        {% endif %}
+                        {% if sortieHlp.peutEtreAnnule(sortie, app.user) %}
+                            <a href="{{ path('sortie_annuler', {'id': sortie.id}) }}">Annuler</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
         </table>
 
         <div class="sortie-pagination">
@@ -90,4 +120,5 @@
     {% else %}
         <div>Aucune sortie !</div>
     {% endif %}
+    <a class="btn btn-secondary" href="{{ path('sortie_create')}}">Créer une sortie</a>
 {% endblock %}
