@@ -83,7 +83,7 @@
 					</p>
 					{% if sortie.lieu.latitude is defined %}
 						{% set url = 'https://www.google.com/maps/search/'~ sortie.lieu.nom ~'+'~ sortie.lieu.ville.nom ~'\@'~ sortie.lieu.latitude ~','~ sortie.lieu.longitude   %}
-						<a href={{ url }}>
+						<a href={{ url }} target="about_blank">
 							<i class="fas fa-map-marked-alt" style="width:70;">
 								Localiser la sortie
 							</i>
