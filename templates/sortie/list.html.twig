@@ -63,6 +63,7 @@
                     {% endif %}
                 </td>
                 <td>
+                    <a href="{{ path('sortie_detail', {'id': sortie.id}) }}">Afficher</a>
                     {% if userHlp.peutSinscrireASortie(app.user, sortie) %}
                         <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">S'inscrire</a>
                     {% endif %}
