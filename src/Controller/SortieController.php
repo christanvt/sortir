@@ -9,6 +9,8 @@ use App\Form\SortieAnnulationType;
 use App\Form\SortieSearchType;
 use App\Form\SortieType;
 use App\Helper\EtatChangeHelper;
+use App\Helper\ParticipantHelper;
+use App\Helper\SortieHelper;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +28,7 @@ class SortieController extends AbstractController
      *
      * @Route("/{page}", name="list", requirements={"page": "\d+"})
      */
-    public function list(Request $request, EntityManagerInterface $em, int $page = 1)
+    public function list(Request $request, EntityManagerInterface $em, int $page = 1, ParticipantHelper $userHlp, SortieHelper $sortieHlp)
     {
         //valeurs par défaut du formulaire de recherche
         //sous forme de tableau associatif, car le form n'est pas associée à une entité
@@ -47,8 +49,9 @@ class SortieController extends AbstractController
         //appelle ma méthode de recherche et filtre
         $sortieRepo = $em->getRepository(Sortie::class);
         $paginationSortie = $sortieRepo->search($page, 20, $this->getUser(), $searchData);
-
         return $this->render('sortie/list.html.twig', [
+            'userHlp' => $userHlp,
+            'sortieHlp' => $sortieHlp,
             'paginationSortie' => $paginationSortie,
             'searchForm' => $searchForm->createView()
         ]);

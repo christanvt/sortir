@@ -34,25 +34,27 @@
     {% if paginationSortie %}
         <table class="table table-striped table-sm sortie-table">
             <tr>
-                <th>Intitulé</th>
-                <th>Statut</th>
-                <th class="d-none d-lg-table-cell">Inscrits</th>
-                <th class="d-none d-md-table-cell">Places restantes</th>
-                <th class="d-none d-md-table-cell">Date de début</th>
-                <th class="d-none d-lg-table-cell">Organisé par</th>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th class="d-none d-md-table-cell">Clôture</th>
+                <th class="d-none d-lg-table-cell">Inscrits/places</th>
+                <th class="d-none d-lg-table-cell">Etat</th>
+                <th class="d-none d-lg-table-cell">Inscrit</th>
+                <th class="d-none d-lg-table-cell">Organisateur</th>
                 <th>Action</th>
             </tr>
         {% for sortie in paginationSortie %}
             <tr>
                 <td><a href="{{ path('sortie_detail', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
+                <td class="d-none d-md-table-cell">{{ sortie.dateHeureDebut|date("d/m/Y H:i") }}</td>
+                <td class="d-none d-md-table-cell">{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
+                <td class="d-none d-md-table-cell">{{ sortie.nbInscriptionsMax - sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}</td>
                 <td>{{ sortie.etat.libelle }}</td>
-                <td class="d-none d-lg-table-cell">{{ sortie.participants|length }}</td>
-                {% if sortie.nbInscriptionsMax %}
-                    <td class="d-none d-md-table-cell">{{ sortie.nbInscriptionsMax - sortie.participants|length }} / {{ sortie.nbInscriptionsMax }}</td>
+                {% if sortie.isParticipant(app.user) %}
+                    <td class="d-none d-md-table-cell">X</td>
                 {% else %}
-                    <td class="d-none d-md-table-cell">&#8734;</td>
+                    <td class="d-none d-md-table-cell">&nbsp;</td>
                 {% endif %}
-                <td class="d-none d-md-table-cell">{{ sortie.dateHeureDebut|date("d-m-Y à H:i") }}</td>
                 <td class="d-none d-lg-table-cell">
                     {% if sortie.organisateur.actif %}
                         <a href="{{ path('participant_edit', {id: sortie.organisateur.id}) }}" title="Voir son profil">{{ sortie.organisateur.nom ~ " " ~ sortie.organisateur.prenom|first }} ({{ sortie.organisateur.campus.nom }})</a>
@@ -61,16 +63,20 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if sortie.etat.libelle == 'OUVERTE' %}
-                        <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">{{ sortie.isParticipant(app.user) ? "Me désinscrire" : "M'inscrire" }}</a>
-                    {% elseif sortie.etat.libelle == 'CREEE' and sortie.organisateur == app.user %}
+                    {% if userHlp.peutSinscrireASortie(app.user, sortie) %}
+                        <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">S'inscrire</a>
+                    {% endif %}
+                    {% if userHlp.peutSeDesinscrireASortie(app.user, sortie) %}
+                        <a href="{{ path('participant_toggle', {'id': sortie.id}) }}">Se désister</a>
+                    {% endif %}
+                    {% if sortieHlp.peutEtrePublie(sortie, app.user) %}
                         <a href="{{ path('sortie_publier', {'id': sortie.id}) }}">Publier</a>
+                    {% endif %}
+                    {% if sortieHlp.peutEtreModifie(sortie, app.user) %}
                         <a href="{{ path('sortie_update', {'id': sortie.id}) }}">Modifier</a>
                     {% endif %}
-                    {% if sortie.organisateur == app.user %}
-                        {% if sortie.etat.libelle == 'OUVERTE' or sortie.etat.libelle == 'CREE' %}
-                            <a class="btn btn-danger" href="{{ path('sortie_annuler', {'id': sortie.id}) }}">Annuler</a>
-                        {% endif %}
+                    {% if sortieHlp.peutEtreAnnule(sortie, app.user) %}
+                        <a class="btn btn-danger" href="{{ path('sortie_annuler', {'id': sortie.id}) }}">Annuler</a>
                     {% endif %}
                 </td>
             </tr>
