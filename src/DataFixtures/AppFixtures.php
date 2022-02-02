@@ -93,6 +93,7 @@ class AppFixtures extends Fixture
     public function loadParticipants(int $count): void
     {
         $faker = Faker\Factory::create('fr_FR');
+        $allCampus = $this->manager->getRepository(Campus::class)->findAll();
         $folderTarget = './public/';
         if (file_exists($folderTarget)) {
             foreach (glob("./public/img/*/*.jpg") as $fileTypeCheck) {
@@ -145,7 +146,7 @@ class AppFixtures extends Fixture
             $telephone = $faker->mobileNumber();
             $mailDomain = $faker->freeEmailDomain();
             $email = $prenom . '.' . $nom . '@' . $mailDomain;
-            $campus = $this->manager->getRepository(Campus::class)->findAll()[random_int(0, 2)];
+            $campus = $faker->randomElement($allCampus);
             $password = $this->encoder->hashPassword($participant, $pseudo);
             $date = new DateTimeImmutable('now');
 
