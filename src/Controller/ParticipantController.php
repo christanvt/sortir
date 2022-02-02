@@ -12,10 +12,14 @@ use App\EventState\EventStateHelper;
 use App\Form\ParticipantIdentifedType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ParticipantRepository;
+use Doctrine\ORM\Mapping\Id;
+use PHPUnit\Framework\MockObject\Rule\Parameters;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Parameter;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/participant")
@@ -80,16 +84,18 @@ class ParticipantController extends AbstractController
      */
     public function edit(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
         if (
-            $this->isGranted('ROLE_ADMIN')
+            $user == $participant //Si l'user est celui du edit
+        ) {
+            $form = $this->createForm(ParticipantIdentifedType::class, $participant);
+        } elseif (
+            $this->isGranted('ROLE_ADMIN') //Si l'admin veut edit
         ) {
             $form = $this->createForm(ParticipantType::class, $participant);
         } else {
-
-            $form = $this->createForm(ParticipantIdentifedType::class, $participant);
+            throw new AccessDeniedException();
         };
-
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
