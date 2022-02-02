@@ -22,6 +22,8 @@ use PHPUnit\Framework\MockObject\Rule\Parameters;
 use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/participant")
@@ -144,7 +146,7 @@ class ParticipantController extends AbstractController
     /**
      * @Route("/{id}/edit/motdepasse", name="participant_edit_motpasse", methods={"GET", "POST"})
      */
-    public function editMotDePasse(Request $request, Participant $participant, EntityManagerInterface $entityManager): Response
+    public function editMotDePasse(Request $request, Participant $participant, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder): Response
     {
         $user = $this->getUser();
         if (
@@ -161,6 +163,11 @@ class ParticipantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $newpwd = $form->get('motpasse')->getData();
+            $newEncodedPassword = $passwordEncoder->hashPassword($participant, $newpwd);
+            $participant->setMotpasse($newEncodedPassword);
+            $entityManager->persist($participant);
+
             $entityManager->flush();
 
             return $this->redirectToRoute('participant_show', ['id' => $participant->getId()], Response::HTTP_SEE_OTHER);
