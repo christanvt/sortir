@@ -65,12 +65,12 @@ class AppFixtures extends Fixture
     public function loadLieux(int $num): void
     {
         $faker = Faker\Factory::create('fr_FR');
-        $allVille = $this->manager->getRepository(Ville::class)->findAll();
+        $allVilles = $this->manager->getRepository(Ville::class)->findAll();
         for ($i = 0; $i < $num; $i++) {
             $lieu = new Lieu();
             $lieu->setNom('Guinguette chez ' . $faker->name());
             $lieu->setRue($faker->streetName);
-            $lieu->setVille($faker->randomElement($allVille));
+            $lieu->setVille($faker->randomElement($allVilles));
             $this->manager->persist($lieu);
         }
         $this->manager->flush();
