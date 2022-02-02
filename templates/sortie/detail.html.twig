@@ -81,7 +81,7 @@
 						du campus de
 						{{ sortie.organisateur.campus.nom }}
 					</p>
-					{% if sortie.lieu.latitude is defined %}
+					{% if sortie.lieu.latitude is not null %}
 						{% set url = 'https://www.google.com/maps/search/'~ sortie.lieu.nom ~'+'~ sortie.lieu.ville.nom ~'\@'~ sortie.lieu.latitude ~','~ sortie.lieu.longitude   %}
 						<a href={{ url }} target="about_blank">
 							<i class="fas fa-map-marked-alt" style="width:70;">
