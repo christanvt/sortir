@@ -28,12 +28,13 @@ class AppFixtures extends Fixture
         $this->manager = $manager;
         $this->loadEtat();
         $this->loadVilles();
-        $this->loadLieux(2);
+        $this->loadLieux(20);
         $this->loadCampus();
-        $this->loadParticipants(10);
+        $this->loadParticipants(20);
         $this->loadAdmin();
-        $this->loadMeSebastienBaudin();
-        $this->loadSorties(5);
+        $this->loadDevUser();
+        $this->loadSebastienBaudin();
+        $this->loadSorties(50);
     }
 
     public function loadEtat(): void
@@ -167,7 +168,7 @@ class AppFixtures extends Fixture
         $this->manager->flush();
     }
 
-    public function loadMeSebastienBaudin(): void
+    public function loadSebastienBaudin(): void
     {
         $participant = new Participant;
         $nom = "Baudin";
@@ -236,6 +237,41 @@ class AppFixtures extends Fixture
         $this->manager->persist($participant);
         $this->manager->flush();
     }
+    public function loadDevUser(): void
+    {
+        $participant = new Participant;
+        $nom = "user";
+        $prenom = "user";
+        $pseudo = "user";
+        $administrateur = 0;
+        $actif = 1;
+        $telephone = "0123456789";
+        $email = "user@user.fr";
+        $nomCampus = "SAINT-HERBLAIN";
+        $campus = $this->manager->getRepository(Campus::class)->findOneBy(['nom' => $nomCampus]);
+        $password = $this->encoder->hashPassword($participant, 'user');
+        $content = file_get_contents("https://www.lense.fr/wp-content/uploads/2014/06/steve-jobs-albert-watson-bw.jpg");
+        $filename = "image.jpg";
+        $fp = fopen("./public/img/profils/" . $filename, "w");
+        fwrite($fp, $content);
+        fclose($fp);
+        $date = new DateTimeImmutable('now');
+        $participant
+            ->setNom($nom)
+            ->setPrenom($prenom)
+            ->setPseudo($pseudo)
+            ->setAdministrateur($administrateur)
+            ->setActif($actif)
+            ->setTelephone($telephone)
+            ->setEmail($email)
+            ->setCampus($campus)
+            ->setMotpasse($password)
+            ->setFilename($filename)
+            ->setUpdatedAt($date);
+        $this->manager->persist($participant);
+        $this->manager->flush();
+    }
+
     public function loadSorties(int $count): void
     {
         $faker = Faker\Factory::create('fr_FR');
