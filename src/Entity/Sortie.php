@@ -301,6 +301,11 @@ class Sortie
         return false;
     }
 
+    public function isOrganisteur(UserInterface $user): bool
+    {
+        return $user == $this->getOrganisateur();
+    }
+
     /**
      * Teste si cette sortie est complète
      *

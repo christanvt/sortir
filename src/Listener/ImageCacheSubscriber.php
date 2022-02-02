@@ -45,9 +45,14 @@ class ImageCacheSubscriber implements EventSubscriber
     public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getEntity();
+
         if (!$entity instanceof Participant) {
             return;
         }
+        if(!$args->hasChangedField('imageFile')){
+            return;
+        }
+
         $object = $args->getObject(); //ici je récupère l'objet
 
         $linkForImage = $this->uploaderHelper->asset($object, 'imageFile'); //ici je construit le chemin de l'ancien fichier à supprimer
