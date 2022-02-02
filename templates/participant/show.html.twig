@@ -46,16 +46,12 @@
 					</tr>
 					{% if is_granted('ROLE_ADMIN') %}
 						<tr>
-							<th>Mot de passe</th>
-							<td>{{ participant.motpasse }}</td>
-						</tr>
-						<tr>
 							<th>Administrateur</th>
-							<td>{{ participant.administrateur ? 'Yes' : 'No' }}</td>
+							<td>{{ participant.administrateur ? '<i class="fas fa-check" style="color:green;"></i>' : '<i class="fas fa-times" style="color:red;"></i>' }}</td>
 						</tr>
 						<tr>
 							<th>Actif</th>
-							<td>{{ participant.actif ? 'Yes' : 'No' }}</td>
+							<td>{{ participant.actif ? '<i class="fas fa-check" style="color:green;"></i>' : '<i class="fas fa-times" style="color:red;"></i>' }}</td>
 						</tr>
 					{% endif %}
 				</tbody>
@@ -67,13 +63,20 @@
 		<div class="col-12 mt-4">
 			{% if app.user.id == participant.id or is_granted('ROLE_ADMIN') %}
 				<a href="{{ path('participant_edit_photo', {'id': participant.id}) }}" title="éditer profil">
-					<button class="mx-3 px-4 py-2">Modifier ma photo de profil</button>
+					<button class="mx-3 px-4 py-2">Modifier
+						{% if is_granted('ROLE_ADMIN') %}l{% else %}m
+						{% endif %}a photo de profil</button>
 				</a>
 				<a href="{{ path('participant_edit', {'id': participant.id}) }}" title="éditer profil">
-					<button class="mx-3 px-4 py-2">Modifier mes informations personnelles</button>
+					<button class="mx-3 px-4 py-2">Modifier
+						{% if is_granted('ROLE_ADMIN') %}l{% else %}m
+						{% endif %}es informations personnelles</button>
 				</a>
 				<a href="{{ path('participant_edit_motpasse', {'id': participant.id}) }}" title="éditer profil">
-					<button class="mx-3 px-4 py-2">Modifier mon mot de passe</button>
+					<button class="mx-3 px-4 py-2">Modifier
+						{% if is_granted('ROLE_ADMIN') %}le{% else %}mon
+						{% endif %}
+						mot de passe</button>
 				</a>
 			{% endif %}
 			<a href="{{ path('main_home') }}" title="accueil">
