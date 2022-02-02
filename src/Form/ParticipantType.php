@@ -21,10 +21,6 @@ class ParticipantType extends AbstractType
             ->add('motpasse')
             ->add('administrateur')
             ->add('actif')
-            ->add('campus')
-            ->add('imageFile', FileType::class, [
-                'required' => false
-            ])
             ->add('campus');
     }
 

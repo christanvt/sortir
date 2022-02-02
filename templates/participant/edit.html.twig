@@ -5,16 +5,6 @@
 
 {% block body %}
 	<h1>Edit Participant</h1>
-	<div class="container text-center">
-		{% if participant.filename %}
-			<img class=" m-1" src="{{ vich_uploader_asset(participant,'imageFile')|imagine_filter('thumb')}}" alt=""><br>
-		{% else %}
-			<img class=" m-1" src="{{ '/img/empty-avatar.jpeg'|imagine_filter('thumb')}}" alt="Photo de profil"><br>
-			<button>Ajouter ma photo</button>
-
-		{% endif %}
-		<br>
-	</div>
 	{{ include('participant/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 
 
