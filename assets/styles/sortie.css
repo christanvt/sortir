@@ -1,0 +1,27 @@
+select.form-control{display:inline-block}
+input.form-control{display:inline-block}
+
+select.form-control-sm{
+    display:inline-block;
+    margin-left: 10px;
+    width: fit-content;
+}
+input.form-control-sm{
+    display:inline-block;
+    margin-left: 10px;
+    width: fit-content;
+}
+
+input.datepicker{
+    width:100px;
+    margin-left: 10px;
+    text-align: center;
+}
+
+.sortie-pagination {
+    padding: 20px 0 0 0;
+}
+
+ul.pagination {
+    justify-content: center;
+}

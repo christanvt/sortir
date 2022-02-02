@@ -36,8 +36,10 @@ class SortieController extends AbstractController
             'subscribed_to' => true,
             'not_subscribed_to' => true,
             'is_organizer' => true,
+            'gone' => false,
             'start_at_min_date' => new \DateTime("- 1 month"),
             'start_at_max_date' => new \DateTime("+ 1 year"),
+
         ];
         $searchForm = $this->createForm(SortieSearchType::class, $searchData);
 

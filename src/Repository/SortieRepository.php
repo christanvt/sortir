@@ -104,6 +104,12 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('campus', $searchData['campus']);
         }
 
+        //filtre par date passé
+        if (!empty($searchData['gone'])){
+            $qb->andWhere('s.dateHeureDebut < :now')
+                ->setParameter('now', new \DateTime());
+        }
+
         //filtre par date de début minimum
         if (!empty($searchData['start_at_min_date'])){
             $qb->andWhere('s.dateHeureDebut >= :start_at_min_date')
