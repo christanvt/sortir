@@ -5,8 +5,13 @@
 
 {% block body %}
 	<div class="text-center mb-5 mt-5 pb-5">
-		<h1>Profil -
-			{{ participant.pseudo }}</h1>
+		<h1>
+			{% if app.user.pseudo == participant.pseudo %}Mon profil
+			{% else %}
+				Profil de
+				{{ participant.pseudo }}
+			{% endif %}
+		</h1>
 	</div>
 	<div class="row">
 		<div class="col-4 text-center">
