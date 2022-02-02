@@ -39,6 +39,10 @@ security:
   access_control:
     # - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }
+    # premièrement, on autorise l'accès au login pour tout le monde !
+    - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    # finalement, on autorise l'accès au site seulement pour les users connectés
+    - { path: ^/, roles: ROLE_USER }
 
 when@test:
   security:
