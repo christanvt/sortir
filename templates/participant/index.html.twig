@@ -4,53 +4,30 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container">
-		<h1>Participant index</h1>
+	<div class="container col-3">
+		<h1 class="text-center">Membres :</h1>
 
-		<table class="table">
-			<thead>
-				<tr>
-					<th>Email</th>
-					<th>Nom</th>
-					<th>Prenom</th>
-					<th>Telephone</th>
-					<th>Actif</th>
-					<th>Pseudo</th>
-					<th>Photo profil</th>
-					<th>actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for participant in participants %}
-					<tr>
-						<td>{{ participant.email }}</td>
-						<td>{{ participant.nom }}</td>
-						<td>{{ participant.prenom }}</td>
-						<td>{{ participant.telephone }}</td>
-						<td>{{ participant.actif ? 'Yes' : 'No' }}</td>
-						<td>{{ participant.pseudo }}</td>
-						{% if participant.filename %}
-							<td>
-								<img src="{{ vich_uploader_asset(participant,'imageFile')|imagine_filter('thumb')}}" alt="">
-							</td>
-						{% else %}
-							<td>
-								pas de photo
-							</td>
-						{% endif %}
-						<td>
-							<a href="{{ path('participant_show', {'id': participant.id}) }}">show</a>
-							<a href="{{ path('participant_edit', {'id': participant.id}) }}">edit</a>
-						</td>
-					</tr>
-				{% else %}
-					<tr>
-						<td colspan="11">no records found</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+		<ul style="list-style:none;max-height:80vh;overflow: scroll;">
+			{% for participant in participants %}
 
-		<a href="{{ path('participant_new') }}">Create new</a>
+				<li>
+					{% if participant.filename %}
+						<img class="imgProfil m-1" src="{{ vich_uploader_asset(participant,'imageFile')|imagine_filter('accu')}}" alt="">
+					{% else %}
+						<img class="imgProfil m-1" src="{{ '/img/empty-avatar.jpeg'|imagine_filter('accu')}}" alt="Photo de profil">
+					{% endif %}
+					<a href="{{ path('participant_show', {'id': participant.id}) }}">
+						{{ participant.pseudo }}
+					</td>
+				</li>
+			{% else %}
+				<li colspan="11">no records found</li>
+
+			{% endfor %}
+		</ul>
+		{% if is_granted('ROLE_ADMIN') %}
+			<a href="{{ path('participant_new') }}">Create new</a>
+		{% endif %}
+
 	</div>
 {% endblock %}
