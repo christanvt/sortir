@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container-fluid">
-		<a class="navbar-brand" href="/">
+		<a class="navbar-brand" href="{{ path('sortie_list') }}">
 			<img src="{{ asset('build/img/favicon.png') }}" alt="" width="30" height="24" class="d-inline-block align-text-top"/>
 			Sortie
 		</a>
@@ -8,32 +8,25 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+			<ul class="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-end">
 				<li class="nav-item">
-					<a class="nav-link disabled">(menu de dev évolutif)</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" title="Tout les participants" href="{{ path('participant_index') }}">Participants</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" title="Tout les sorties" href="{{ path('sortie_create') }}">Créer</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" title="Tout les sorties" href="{{ path('sortie_list') }}">Sorties</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" title="Tout les campus" href="{{ path('campus_index') }}">Campus</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link disabled" title="Tout les villes" href="{{ path('ville_index') }}">Villes</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" title="Tout les lieux" href="{{ path('lieu_index') }}">Lieux</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" title="Tout les états" href="{{ path('etat_index') }}">Etats</a>
+					<a class="nav-link" title="Toutes les sorties" href="{{ path('sortie_list') }}">Accueil</a>
 				</li>
 				{% if app.user %}
+					{% if is_granted("ROLE_ADMIN") %}
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Administration
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="{{ path('campus_index') }}">Campus</a></li>
+								<li><a class="dropdown-item" href="{{ path('etat_index') }}">Etats</a></li>
+								<li><a class="dropdown-item" href="{{ path('lieu_index') }}">Lieux</a></li>
+								<li><a class="dropdown-item" href="{{ path('participant_index') }}">Participants</a></li>
+								<li><a class="dropdown-item" href="{{ path('ville_index') }}">Villes</a></li>
+							</ul>
+						</li>
+					{% endif %}
 					<li class="nav-item dropdown ms-2">
 						{% if app.user.filename %}
 							<img class="nav-link dropdown-toggle imgProfil" src="{{ vich_uploader_asset(app.user,'imageFile')|imagine_filter('accu')}}" width="40" height="auto" alt="Photo de profil" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
