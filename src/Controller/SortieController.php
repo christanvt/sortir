@@ -29,7 +29,7 @@ class SortieController extends AbstractController
      *
      * @Route("/{page}", name="list", requirements={"page": "\d+"})
      */
-    public function list(Request $request, EntityManagerInterface $em, int $page = 1, ParticipantHelper $userHlp, SortieHelper $sortieHlp)
+    public function list(Request $request, EntityManagerInterface $em, int $page = 1, ParticipantHelper $userHlp, SortieHelper $sortieHlp, EtatChangeHelper $etatHelper)
     {
         //valeurs par défaut du formulaire de recherche
         //sous forme de tableau associatif, car le form n'est pas associée à une entité
@@ -46,12 +46,18 @@ class SortieController extends AbstractController
 
         $searchForm->handleRequest($request);
 
-        //on récupère les données soumises par l'utilisateur
-        $searchData = $searchForm->getData();
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            //on récupère les données soumises par l'utilisateur
+            $searchData = $searchForm->getData();
+        }
 
         //appelle ma méthode de recherche et filtre
         $sortieRepo = $em->getRepository(Sortie::class);
         $paginationSortie = $sortieRepo->search($page, 12, $this->getUser(), $searchData);
+        foreach ($paginationSortie as $item)
+        {
+            $etatHelper->updateEtat($item);
+        }
         return $this->render('sortie/list.html.twig', [
             'userHlp' => $userHlp,
             'sortieHlp' => $sortieHlp,

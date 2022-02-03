@@ -167,10 +167,15 @@ class SortieRepository extends ServiceEntityRepository
         $qb->andWhere('s.etat != :archivedState')
             ->setParameter('archivedState', $archivedState);
 
+
         $query = $qb->getQuery();
 
+        $pagination = $this->paginator->paginate($query, 1, $numPerPage+1);
+        if(count($pagination)<=$numPerPage )
+        {
+            $page = 1;
+        }
         $pagination = $this->paginator->paginate($query, $page, $numPerPage);
-
         return $pagination;
     }
 }

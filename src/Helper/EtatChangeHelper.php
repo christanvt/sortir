@@ -65,6 +65,25 @@ class EtatChangeHelper
         $em->flush();
     }
 
+    public function updateEtat(Sortie $s)
+    {
+        if ($this->doitChangerPourOuverte($s)) {
+            $this->changeEtatSortie($s, EtatChangeHelper::ETAT_OUVERTE);
+        }
+        if ($this->doitChangerPourActiviteEnCours($s)) {
+            $this->changeEtatSortie($s, EtatChangeHelper::ETAT_ACTIVITE_EN_COURS);
+        }
+        if ($this->doitChangerPourCloturee($s)) {
+            $this->changeEtatSortie($s, EtatChangeHelper::ETAT_CLOTUREE);
+        }
+        if ($this->doitChangerPourPassee($s)) {
+            $this->changeEtatSortie($s, EtatChangeHelper::ETAT_PASSEE);
+        }
+        if ($this->doitChangerPourArchivee($s)) {
+            $this->changeEtatSortie($s, EtatChangeHelper::ETAT_ARCHIVEE);
+        }
+    }
+
     /**
      *
      * Retourne un booléen en fonction de si la sortie devrait être archivée

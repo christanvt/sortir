@@ -367,22 +367,7 @@ class AppFixtures extends Fixture
         $sortieRepo = $this->manager->getRepository(Sortie::class);
         $sorties = $sortieRepo->findAll();
         foreach ($sorties as $s) {
-
-            if ($this->etatHelper->doitChangerPourOuverte($s)) {
-                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_OUVERTE);
-            }
-            if ($this->etatHelper->doitChangerPourActiviteEnCours($s)) {
-                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_ACTIVITE_EN_COURS);
-            }
-            if ($this->etatHelper->doitChangerPourCloturee($s)) {
-                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_CLOTUREE);
-            }
-            if ($this->etatHelper->doitChangerPourPassee($s)) {
-                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_PASSEE);
-            }
-            if ($this->etatHelper->doitChangerPourArchivee($s)) {
-                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_ARCHIVEE);
-            }
+            $this->etatHelper->updateEtat($s);
         }
     }
 }
