@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/lieu")
+ * @Route("/admin/lieu")
  */
 class LieuController extends AbstractController
 {
