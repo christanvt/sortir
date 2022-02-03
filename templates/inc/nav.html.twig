@@ -19,11 +19,21 @@
 								Administration
 							</a>
 							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-								<li><a class="dropdown-item" href="{{ path('campus_index') }}">Campus</a></li>
-								<li><a class="dropdown-item" href="{{ path('etat_index') }}">Etats</a></li>
-								<li><a class="dropdown-item" href="{{ path('lieu_index') }}">Lieux</a></li>
-								<li><a class="dropdown-item" href="{{ path('participant_index') }}">Participants</a></li>
-								<li><a class="dropdown-item" href="{{ path('ville_index') }}">Villes</a></li>
+								<li>
+									<a class="dropdown-item" href="{{ path('campus_index') }}">Campus</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="{{ path('etat_index') }}">Etats</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="{{ path('lieu_index') }}">Lieux</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="{{ path('participant_index') }}">Participants</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="{{ path('ville_index') }}">Villes</a>
+								</li>
 							</ul>
 						</li>
 					{% endif %}
@@ -33,7 +43,7 @@
 						{% else %}
 							<img class="nav-link dropdown-toggle imgProfil" src="{{ '/img/empty-avatar.jpeg'|imagine_filter('accu')}}" width="40" height="auto" alt="Photo de profil" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						{% endif %}
-						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 							<li>
 								<a class="dropdown-item" title="Login" href="{{ path('participant_my_profil') }}">mon profil</a>
 							</li>
