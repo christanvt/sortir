@@ -76,13 +76,11 @@ class SortieRepository extends ServiceEntityRepository
             OR s.etat = :canceledState
             OR s.etat = :closedState  
             OR (s.etat = :createdState AND s.organisateur = :user))
-            AND s.etat != :archivedState
         ')
             ->setParameter('openState', $openState)
             ->setParameter('closedState', $closedState)
             ->setParameter('createdState', $createdState)
             ->setParameter('canceledState', $canceledState)
-            ->setParameter('archivedState', $archivedState)
             ->setParameter('user', $user);
 
         //jointures toujours présentes, pour éviter que doctrine fasse 10000 requêtes
@@ -122,21 +120,40 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('start_at_max_date', $searchData['start_at_max_date']);
         }
 
-        //inclure les sorties auxquelles je suis inscrit
-        if (!empty($searchData['subscribed_to'])) {
-            $qb->orWhere(':u1 MEMBER OF s.participants AND s.etat != :archivedState');
+
+        $i = !empty($searchData['subscribed_to']);
+        $ni = !empty($searchData['not_subscribed_to']);
+        $o = !empty($searchData['is_organizer']);
+        if ($i && $ni && $o) {
+            $qb->andWhere(':u1 MEMBER OF s.participants')
+                ->orWhere(':u2 NOT MEMBER OF s.participants')
+                ->orWhere('s.organisateur = :u3')
+                ->setParameter('u1', $user)
+                ->setParameter('u2', $user)
+                ->setParameter('u3', $user);
+        } elseif ($i && $ni) {
+            $qb->andWhere(':u1 MEMBER OF s.participants')
+                ->orWhere(':u2 NOT MEMBER OF s.participants')
+                ->setParameter('u1', $user)
+                ->setParameter('u2', $user);
+        } elseif ($ni && $o) {
+            $qb->andWhere(':u2 NOT MEMBER OF s.participants')
+                ->orWhere('s.organisateur = :u3')
+                ->setParameter('u2', $user)
+                ->setParameter('u3', $user);
+        } elseif ($i && $o) {
+            $qb->andWhere(':u1 MEMBER OF s.participants')
+                ->orWhere('s.organisateur = :u3')
+                ->setParameter('u1', $user)
+                ->setParameter('u3', $user);
+        } elseif ($i) {
+            $qb->andWhere(':u1 MEMBER OF s.participants AND s.etat != :archivedState');
             $qb->setParameter('u1', $user);
-        }
-
-        //inclure les sorties auxquelles je ne suis pas inscrit
-        if (!empty($searchData['not_subscribed_to'])) {
-            $qb->orWhere(':u2 NOT MEMBER OF s.participants AND s.etat != :archivedState');
+        } elseif ($ni) {
+            $qb->andWhere(':u2 NOT MEMBER OF s.participants AND s.etat != :archivedState');
             $qb->setParameter('u2', $user);
-        }
-
-        //inclure les sorties dont je suis l'organisateur
-        if (!empty($searchData['is_organizer'])) {
-            $qb->orWhere('s.organisateur = :u3');
+        } elseif ($o) {
+            $qb->andWhere('s.organisateur = :u3');
             $qb->setParameter('u3', $user);
         }
 
@@ -145,6 +162,10 @@ class SortieRepository extends ServiceEntityRepository
             $qb->orWhere('s.etat = :goneState');
             $qb->setParameter('goneState', $goneState);
         }
+
+
+        $qb->andWhere('s.etat != :archivedState')
+            ->setParameter('archivedState', $archivedState);
 
         $query = $qb->getQuery();
 
