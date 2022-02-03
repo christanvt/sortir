@@ -35,7 +35,7 @@ class SortieController extends AbstractController
         //sous forme de tableau associatif, car le form n'est pas associée à une entité
         $searchData = [
             'subscribed_to' => true,
-            'not_subscribed_to' => true,
+            'not_subscribed_to' => false,
             'is_organizer' => true,
             'gone' => false,
             'start_at_min_date' => new \DateTime("- 1 month"),
