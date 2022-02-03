@@ -76,9 +76,10 @@ class EtatChangeHelper
     {
         $oneMonthAgo = new \DateTime("-1 month");
         if (
-            $sortie->getDateHeureFin() < $oneMonthAgo &&    // la date de fin est passée d'un mois
+            $sortie->getEtat()->getLibelle() !== self::ETAT_CREEE &&  // est ouverte
+            $sortie->getDateHeureFin() > $oneMonthAgo &&    // la date de fin est passée d'un mois
             $sortie->getEtat()->getLibelle() !== self::ETAT_ARCHIVEE    // elle n'est pas déjà archivée
-        ){
+        ) {
             return true;
         }
 
@@ -101,7 +102,7 @@ class EtatChangeHelper
             $sortie->getDateHeureDebut() < $now &&  // la date de début n'est pas passée
             $sortie->getEtat()->getLibelle() !== self::ETAT_ANNULEE &&    // elle n'est pas annulée
             $sortie->getEtat()->getLibelle() !== self::ETAT_ACTIVITE_EN_COURS     // elle n'est pas déjà en cours
-        ){
+        ) {
             return true;
         }
 
@@ -121,7 +122,7 @@ class EtatChangeHelper
         if (
             $sortie->getDateHeureDebut() < $now && // n'est pas encore commencée
             $sortie->getEtat()->getLibelle() !== self::ETAT_ANNULEE // n'est pas déja annulée
-        ){
+        ) {
             return true;
         }
 
@@ -144,7 +145,7 @@ class EtatChangeHelper
             $sortie->getDateLimiteInscription() >= $now &&      // la date de fin des inscriptions est passée
             $sortie->getDateHeureDebut() < $now &&              // la date de début n'est pas passé
             $sortie->getEtat()->getLibelle() !== self::ETAT_CLOTUREE    // n'est pas déjà cloturée
-        ){
+        ) {
             echo $sortie->getDateLimiteInscription()->format("Y-m-d H:i") . " >= " . $now->format("Y-m-d H:i") . "\r\n";
             echo self::ETAT_CLOTUREE;
             return true;
@@ -152,6 +153,7 @@ class EtatChangeHelper
 
         return false;
     }
+
 
     /**
      *

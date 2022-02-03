@@ -139,7 +139,7 @@ class Sortie
         $endDate = clone $this->getDateHeureDebut();
 
         if ($this->getDuree()){
-            $durationInterval = new \DateInterval("PT".$this->getDuree()."H");
+            $durationInterval = new \DateInterval("PT".$this->getDuree()."M");
             $endDate = $endDate->add($durationInterval);
         }
         else {

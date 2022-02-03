@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Helper\EtatChangeHelper;
 use Faker;
 use App\Entity\Etat;
 use App\Entity\Lieu;
@@ -19,23 +20,27 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class AppFixtures extends Fixture
 {
     private $encoder;
-    public function __construct(UserPasswordHasherInterface $encoder)
+    private $etatHelper;
+
+    public function __construct(UserPasswordHasherInterface $encoder, EtatChangeHelper $etatHelper)
     {
         $this->encoder = $encoder;
+        $this->etatHelper = $etatHelper;
     }
+
     public function load(ObjectManager $manager): void
     {
         ini_set('memory_limit', '1024M');
         $this->manager = $manager;
         $this->loadEtat();
         $this->loadVilles();
-        $this->loadLieux(20);
+        $this->loadLieux(1);
         $this->loadCampus();
         $this->loadParticipants(20);
         $this->loadAdmin();
         $this->loadDevUser();
         $this->loadSebastienBaudin();
-        $this->loadSorties(1);
+        $this->loadSorties(30);
     }
 
     public function loadEtat(): void
@@ -86,6 +91,7 @@ class AppFixtures extends Fixture
         }
         $this->manager->flush();
     }
+
     public function loadCampus(): void
     {
         $campusNomsArray = [
@@ -101,6 +107,7 @@ class AppFixtures extends Fixture
         }
         $this->manager->flush();
     }
+
     public function loadParticipants(int $count): void
     {
         $faker = Faker\Factory::create('fr_FR');
@@ -231,6 +238,7 @@ class AppFixtures extends Fixture
         $this->manager->persist($participant);
         $this->manager->flush();
     }
+
     public function loadAdmin(): void
     {
         $participant = new Participant;
@@ -271,6 +279,7 @@ class AppFixtures extends Fixture
         $this->manager->persist($participant);
         $this->manager->flush();
     }
+
     public function loadDevUser(): void
     {
         $participant = new Participant;
@@ -318,15 +327,25 @@ class AppFixtures extends Fixture
         $allOganisateurs = $this->manager->getRepository(Participant::class)->findAll();
         $allLieux = $this->manager->getRepository(Lieu::class)->findAll();
         $allEtats = $this->manager->getRepository(Etat::class)->findAll();
+
+
+
         for ($i = 0; $i < $count; $i++) {
             $sortie = new Sortie;
-            $dateHeureDébut = new DateTimeImmutable('now');
-            $durée = 3;
-            $dateLimitInscription = new DateTimeImmutable('yesterday');
-            $nbrMaxParticipants = 9;
+
+            $dateDebut = $faker->dateTimeBetween($startDate = "- 10 months", "+ 10 months");
+            $dateInterval = clone $dateDebut;
+            $dateInterval->add(new \DateInterval("P33D"));
+
+            $durée = random_int(30, 180);
+            $dateHeureDébut = $faker->dateTimeBetween($dateDebut, $dateInterval);
+            $tmp1 = clone $dateHeureDébut;
+            $tmp2 = clone $dateHeureDébut;
+            $dateLimitInscription = $faker->dateTimeBetween( $tmp1->sub(new \DateInterval("P8D")),  $tmp2->sub(new \DateInterval("P1D")));
+            $nbrMaxParticipants = random_int(2, 24);;
             $organisateur = $faker->randomElement($allOganisateurs);
             $lieu = $faker->randomElement($allLieux);
-            $nom = $lieu->getNom();
+            $nom = "Sortie " . $i . " - " . $lieu->getNom();
             $infos = "Je vous donne rendez vous au " . $nom . " adresse :  " . $lieu->getRue() . " " . $lieu->getVille();
             $campus = $organisateur->getCampus();
             $etat = $faker->randomElement($allEtats);
@@ -344,5 +363,19 @@ class AppFixtures extends Fixture
             $this->manager->persist($sortie);
         }
         $this->manager->flush();
+
+        //MAJ des états
+        $sortieRepo = $this->manager->getRepository(Sortie::class);
+        $sorties = $sortieRepo->findAll();
+        foreach ($sorties as $s) {
+            if ($this->etatHelper->devraitChangerPourCloturee($s)) {
+                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_CLOTUREE);
+                continue;
+            }
+            if ($this->etatHelper->doitChangerPourArchivee($s)) {
+                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_ARCHIVEE);
+                continue;
+            }
+        }
     }
 }

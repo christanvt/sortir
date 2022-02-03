@@ -96,7 +96,7 @@
 			<h4 class="lead mt-3">Inscrits à la sortie</h4>
 			<div>Inscription maximum :
 				{% if sortie.nbInscriptionsMax %}
-					{{ sortie.nbInscriptionsMax - sortie.participants|length }}
+					{{ sortie.participants|length }}
 					/
 					{{ sortie.nbInscriptionsMax }}
 				{% else %}

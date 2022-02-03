@@ -51,7 +51,7 @@ class SortieController extends AbstractController
 
         //appelle ma méthode de recherche et filtre
         $sortieRepo = $em->getRepository(Sortie::class);
-        $paginationSortie = $sortieRepo->search($page, 5, $this->getUser(), $searchData);
+        $paginationSortie = $sortieRepo->search($page, 12, $this->getUser(), $searchData);
         return $this->render('sortie/list.html.twig', [
             'userHlp' => $userHlp,
             'sortieHlp' => $sortieHlp,
