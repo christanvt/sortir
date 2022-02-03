@@ -320,14 +320,14 @@ class AppFixtures extends Fixture
         $allEtats = $this->manager->getRepository(Etat::class)->findAll();
         for ($i = 0; $i < $count; $i++) {
             $sortie = new Sortie;
-            $nom = "sortie à ...";
-            $infos = "Je vous donne rendez vous à ...";
             $dateHeureDébut = new DateTimeImmutable('now');
             $durée = 3;
             $dateLimitInscription = new DateTimeImmutable('yesterday');
             $nbrMaxParticipants = 9;
             $organisateur = $faker->randomElement($allOganisateurs);
             $lieu = $faker->randomElement($allLieux);
+            $nom = $lieu->getNom();
+            $infos = "Je vous donne rendez vous au " . $nom . " adresse :  " . $lieu->getRue() . " " . $lieu->getVille();
             $campus = $organisateur->getCampus();
             $etat = $faker->randomElement($allEtats);
             $sortie
