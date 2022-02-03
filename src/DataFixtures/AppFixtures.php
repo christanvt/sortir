@@ -12,6 +12,7 @@ use DateTimeImmutable;
 use App\Entity\Participant;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Exception;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
@@ -34,7 +35,7 @@ class AppFixtures extends Fixture
         $this->loadAdmin();
         $this->loadDevUser();
         $this->loadSebastienBaudin();
-        $this->loadSorties(50);
+        $this->loadSorties(1);
     }
 
     public function loadEtat(): void
@@ -59,9 +60,14 @@ class AppFixtures extends Fixture
 
     public function loadVilles(): void
     {
-        $connection = $this->manager->getConnection();
-        $stmt = $connection->prepare(file_get_contents(__DIR__ . "/villes_fr.sql"));
-        $stmt->execute();
+        try {
+            $connection = $this->manager->getConnection();
+            $stmt = $connection->prepare(file_get_contents(__DIR__ . "/villes_fr.sql"));
+            $stmt->execute();
+        } catch (Exception $exception) {
+            echo "⚠️ Une erreur est survenue pendant l'injection des données du fichier villes_fr.sql. Raison : " . $exception->getMessage();
+            throw $exception;
+        }
     }
 
 
@@ -132,18 +138,30 @@ class AppFixtures extends Fixture
                 $decodeDatas = json_decode($datas, true);
                 $content = file_get_contents($decodeDatas["image_url"]);
                 $filename = $decodeDatas["filename"];
-                $fp = fopen("./public/img/profils/" . $filename, "w");
-                fwrite($fp, $content);
-                fclose($fp);
+                try {
+                    $fp = fopen("./public/img/profils/" . $filename, "w");
+                    fwrite($fp, $content);
+                    fclose($fp);
+                } catch (Exception $exception) {
+                    echo "⚠️ Une erreur est survenue pendant la création de l'image de profile . Raison : " . $exception->getMessage();
+                    fclose($fp);
+                    throw $exception;
+                }
             } else {
                 $prenom = $faker->firstNameMale();
                 $datas = file_get_contents("https://fakeface.rest/face/json?gender=male&minimum_age=25&maximum_age=40");
                 $decodeDatas = json_decode($datas, true);
                 $content = file_get_contents($decodeDatas["image_url"]);
                 $filename = $decodeDatas["filename"];
-                $fp = fopen("./public/img/profils/" . $filename, "w");
-                fwrite($fp, $content);
-                fclose($fp);
+                try {
+                    $fp = fopen("./public/img/profils/" . $filename, "w");
+                    fwrite($fp, $content);
+                    fclose($fp);
+                } catch (Exception $exception) {
+                    echo "⚠️ Une erreur est survenue pendant la création de l'image de profile . Raison : " . $exception->getMessage();
+                    fclose($fp);
+                    throw $exception;
+                }
             }
             $pseudo = $prenom . '.' . $nom;
             $administrateur = 0;
@@ -187,9 +205,15 @@ class AppFixtures extends Fixture
         $password = $this->encoder->hashPassword($participant, $pseudo);
         $content = file_get_contents("https://avatars.githubusercontent.com/u/4048286?v=4");
         $filename = 'sebastienbaudin2021.jpeg';
-        $fp = fopen("./public/img/profils/" . $filename, "w");
-        fwrite($fp, $content);
-        fclose($fp);
+        try {
+            $fp = fopen("./public/img/profils/" . $filename, "w");
+            fwrite($fp, $content);
+            fclose($fp);
+        } catch (Exception $exception) {
+            echo "⚠️ Une erreur est survenue pendant la création de l'image de profile . Raison : " . $exception->getMessage();
+            fclose($fp);
+            throw $exception;
+        }
         $date = new DateTimeImmutable('now');
 
         $participant
@@ -222,9 +246,15 @@ class AppFixtures extends Fixture
         $password = $this->encoder->hashPassword($participant, 'admin');
         $content = file_get_contents("https://www.lense.fr/wp-content/uploads/2014/06/steve-jobs-albert-watson-bw.jpg");
         $filename = "image.jpg";
-        $fp = fopen("./public/img/profils/" . $filename, "w");
-        fwrite($fp, $content);
-        fclose($fp);
+        try {
+            $fp = fopen("./public/img/profils/" . $filename, "w");
+            fwrite($fp, $content);
+            fclose($fp);
+        } catch (Exception $exception) {
+            echo "⚠️ Une erreur est survenue pendant la création de l'image de profile . Raison : " . $exception->getMessage();
+            fclose($fp);
+            throw $exception;
+        }
         $date = new DateTimeImmutable('now');
         $participant
             ->setNom($nom)
@@ -256,9 +286,15 @@ class AppFixtures extends Fixture
         $password = $this->encoder->hashPassword($participant, 'user');
         $content = file_get_contents("https://www.lense.fr/wp-content/uploads/2014/06/steve-jobs-albert-watson-bw.jpg");
         $filename = "image.jpg";
-        $fp = fopen("./public/img/profils/" . $filename, "w");
-        fwrite($fp, $content);
-        fclose($fp);
+        try {
+            $fp = fopen("./public/img/profils/" . $filename, "w");
+            fwrite($fp, $content);
+            fclose($fp);
+        } catch (Exception $exception) {
+            echo "⚠️ Une erreur est survenue pendant la création de l'image de profile . Raison : " . $exception->getMessage();
+            fclose($fp);
+            throw $exception;
+        }
         $date = new DateTimeImmutable('now');
         $participant
             ->setNom($nom)
