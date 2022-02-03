@@ -419,8 +419,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function isInscrit(Sortie $sortie): bool
     {
-        foreach($this->getInscritAuxSorties() as $s){
-            if ($sortie->getId() === $s->getId()){
+        foreach ($this->getInscritAuxSorties() as $s) {
+            if ($sortie->getId() === $s->getId()) {
                 return true;
             }
         }

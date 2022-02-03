@@ -163,7 +163,7 @@ class AppFixtures extends Fixture
                     throw $exception;
                 }
             }
-            $pseudo = $prenom . '.' . $nom;
+            $pseudo = $prenom . $nom;
             $administrateur = 0;
             $actif = 1;
             $telephone = $faker->mobileNumber();
