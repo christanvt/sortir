@@ -77,7 +77,7 @@ class EtatChangeHelper
         $oneMonthAgo = new \DateTime("-1 month");
         if (
             $sortie->getEtat()->getLibelle() !== self::ETAT_CREEE &&  // est ouverte
-            $sortie->getDateHeureFin() > $oneMonthAgo &&    // la date de fin est passée d'un mois
+            $sortie->getDateHeureFin() < $oneMonthAgo &&    // la date de fin est passée d'un mois
             $sortie->getEtat()->getLibelle() !== self::ETAT_ARCHIVEE    // elle n'est pas déjà archivée
         ) {
             return true;
@@ -98,8 +98,8 @@ class EtatChangeHelper
     {
         $now = new \DateTime();
         if (
-            $sortie->getEtat()->getLibelle() === self::ETAT_CREEE &&   // elle est créée
-            $sortie->getDateHeureDebut() < $now &&  // la date de début n'est pas passée
+            $sortie->getEtat()->getLibelle() !== self::ETAT_CREEE &&   // elle est créée
+            $sortie->getDateHeureDebut() == $now &&  // la date de début c'est maintenant
             $sortie->getEtat()->getLibelle() !== self::ETAT_ANNULEE &&    // elle n'est pas annulée
             $sortie->getEtat()->getLibelle() !== self::ETAT_ACTIVITE_EN_COURS     // elle n'est pas déjà en cours
         ) {
@@ -109,19 +109,13 @@ class EtatChangeHelper
         return false;
     }
 
-    /**
-     *
-     * Retourne un booléen en fonction de si la sortie devrait être classée comme "annulée"
-     *
-     * @param Sortie $sortie
-     * @return bool
-     */
-    public function devraitChangerPourAnnulee(Sortie $sortie): bool
+    public function doitChangerPourPassee(Sortie $sortie): bool
     {
         $now = new \DateTime();
         if (
-            $sortie->getDateHeureDebut() < $now && // n'est pas encore commencée
-            $sortie->getEtat()->getLibelle() !== self::ETAT_ANNULEE // n'est pas déja annulée
+            $sortie->getDateHeureDebut() < $now &&  // la date de début n'est pas passée
+            $sortie->getEtat()->getLibelle() !== self::ETAT_ANNULEE &&    // elle n'est pas annulée
+            $sortie->getEtat()->getLibelle() !== self::ETAT_PASSEE     // elle n'est pas déjà passé
         ) {
             return true;
         }
@@ -136,24 +130,36 @@ class EtatChangeHelper
      * @param Sortie $sortie
      * @return bool
      */
-    public function devraitChangerPourCloturee(Sortie $sortie): bool
+    public function doitChangerPourCloturee(Sortie $sortie): bool
     {
         $now = new \DateTime();
 
         if (
-            $sortie->getEtat()->getLibelle() === self::ETAT_OUVERTE &&  // est ouverte
-            $sortie->getDateLimiteInscription() >= $now &&      // la date de fin des inscriptions est passée
-            $sortie->getDateHeureDebut() < $now &&              // la date de début n'est pas passé
-            $sortie->getEtat()->getLibelle() !== self::ETAT_CLOTUREE    // n'est pas déjà cloturée
+            $sortie->getEtat()->getLibelle() !== self::ETAT_CREEE &&  // pas en cours de création
+            $sortie->getEtat()->getLibelle() !== self::ETAT_ANNULEE &&  // pas en cours de création
+            $sortie->getDateLimiteInscription() < $now               // la date de début  limite est passé
         ) {
-            echo $sortie->getDateLimiteInscription()->format("Y-m-d H:i") . " >= " . $now->format("Y-m-d H:i") . "\r\n";
-            echo self::ETAT_CLOTUREE;
             return true;
         }
 
         return false;
     }
 
+    public function doitChangerPourOuverte(Sortie $sortie): bool
+    {
+        $now = new \DateTime();
+
+        if (
+            $sortie->getEtat()->getLibelle() !== self::ETAT_CREEE &&  // pas en cours de création
+            $sortie->getEtat()->getLibelle() !== self::ETAT_OUVERTE &&  // pas en cours de création
+            $sortie->getEtat()->getLibelle() !== self::ETAT_ANNULEE &&  // pas en cours de création
+            $sortie->getDateLimiteInscription() > $now               // la date de début  limite est passé
+        ) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      *
@@ -181,5 +187,7 @@ class EtatChangeHelper
         $lib = $sortie->getEtat()->getLibelle();
         return $lib === self::ETAT_OUVERTE || $lib === self::ETAT_CREEE;
     }
+
+
 
 }

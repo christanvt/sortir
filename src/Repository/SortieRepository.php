@@ -124,13 +124,13 @@ class SortieRepository extends ServiceEntityRepository
 
         //inclure les sorties auxquelles je suis inscrit
         if (!empty($searchData['subscribed_to'])) {
-            $qb->orWhere(':u1 MEMBER OF s.participants');
+            $qb->orWhere(':u1 MEMBER OF s.participants AND s.etat != :archivedState');
             $qb->setParameter('u1', $user);
         }
 
         //inclure les sorties auxquelles je ne suis pas inscrit
         if (!empty($searchData['not_subscribed_to'])) {
-            $qb->orWhere(':u2 NOT MEMBER OF s.participants');
+            $qb->orWhere(':u2 NOT MEMBER OF s.participants AND s.etat != :archivedState');
             $qb->setParameter('u2', $user);
         }
 

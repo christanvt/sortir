@@ -329,7 +329,6 @@ class AppFixtures extends Fixture
         $allEtats = $this->manager->getRepository(Etat::class)->findAll();
 
 
-
         for ($i = 0; $i < $count; $i++) {
             $sortie = new Sortie;
 
@@ -341,7 +340,7 @@ class AppFixtures extends Fixture
             $dateHeureDébut = $faker->dateTimeBetween($dateDebut, $dateInterval);
             $tmp1 = clone $dateHeureDébut;
             $tmp2 = clone $dateHeureDébut;
-            $dateLimitInscription = $faker->dateTimeBetween( $tmp1->sub(new \DateInterval("P8D")),  $tmp2->sub(new \DateInterval("P1D")));
+            $dateLimitInscription = $faker->dateTimeBetween($tmp1->sub(new \DateInterval("P8D")), $tmp2->sub(new \DateInterval("P1D")));
             $nbrMaxParticipants = random_int(2, 24);;
             $organisateur = $faker->randomElement($allOganisateurs);
             $lieu = $faker->randomElement($allLieux);
@@ -368,13 +367,21 @@ class AppFixtures extends Fixture
         $sortieRepo = $this->manager->getRepository(Sortie::class);
         $sorties = $sortieRepo->findAll();
         foreach ($sorties as $s) {
-            if ($this->etatHelper->devraitChangerPourCloturee($s)) {
+
+            if ($this->etatHelper->doitChangerPourOuverte($s)) {
+                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_OUVERTE);
+            }
+            if ($this->etatHelper->doitChangerPourActiviteEnCours($s)) {
+                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_ACTIVITE_EN_COURS);
+            }
+            if ($this->etatHelper->doitChangerPourCloturee($s)) {
                 $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_CLOTUREE);
-                continue;
+            }
+            if ($this->etatHelper->doitChangerPourPassee($s)) {
+                $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_PASSEE);
             }
             if ($this->etatHelper->doitChangerPourArchivee($s)) {
                 $this->etatHelper->changeEtatSortie($s, EtatChangeHelper::ETAT_ARCHIVEE);
-                continue;
             }
         }
     }
