@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Etat;
 use App\Entity\Ville;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,7 +23,7 @@ class VilleRepository extends ServiceEntityRepository
         $this->paginator = $paginator;
     }
 
-    public function findPaginatedVilles(int $page = 1, int $numPerPage = 100)
+    public function findPaginatedVilles(int $page = 1, int $numPerPage = 50)
     {
         $qb = $this->createQueryBuilder('v')
             ->addOrderBy('v.nom', 'ASC');

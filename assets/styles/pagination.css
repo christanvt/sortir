@@ -1,0 +1,11 @@
+.sortie-pagination {
+    padding: 20px 0 0 0;
+}
+
+.ville-pagination {
+    padding: 20px 0 0 0;
+}
+
+ul.pagination {
+    justify-content: center;
+}

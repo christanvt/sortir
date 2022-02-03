@@ -14,6 +14,7 @@ use App\Helper\SortieHelper;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,7 +51,7 @@ class SortieController extends AbstractController
 
         //appelle ma méthode de recherche et filtre
         $sortieRepo = $em->getRepository(Sortie::class);
-        $paginationSortie = $sortieRepo->search($page, 20, $this->getUser(), $searchData);
+        $paginationSortie = $sortieRepo->search($page, 5, $this->getUser(), $searchData);
         return $this->render('sortie/list.html.twig', [
             'userHlp' => $userHlp,
             'sortieHlp' => $sortieHlp,
@@ -94,7 +95,7 @@ class SortieController extends AbstractController
      *
      * @Route("/ajout", name="create")
      */
-    public function create(Request $request, EntityManagerInterface $em, EtatChangeHelper $stateHelper, SortieRepository $sortieRepo)
+    public function create(Request $request, EntityManagerInterface $em, EtatChangeHelper $etatHelper)
     {
         $sortie = new Sortie();
 
@@ -105,33 +106,23 @@ class SortieController extends AbstractController
         // (note the time designator, T, that precedes the time value).
         // PnYnMnDTnHnMnS
         $sortie->setDateLimiteInscription($sortie->getDateHeureDebut()->sub(new \DateInterval("PT1H")));
+        // 1 heures par defaut
+        $sortie->setDuree(60);
+        $sortie->setNbInscriptionsMax(2);
 
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            // donner l'état "créée" à cette sortie
-            $sortie->setEtat($stateHelper->getEtatByNom(EtatChangeHelper::ETAT_CREEE));
 
-            //on renseigne son auteur (le user actuel)
-            $u = $this->getUser();
-            if ($u == null) {
-                // parce que pour l'instant on ne se connecte pas au site avec un login
-                // donc je feinte
-                $u = $em->getRepository(Participant::class)->findOneBy(['email' => 'admin@admin.fr']);
-            }
+            $saveandPublishAction = $sortieForm->get('saveAndPublish')->isClicked();
 
-            $sortie->setOrganisateur($u);
-            $sortie->setCampus($u->getCampus());
+            $sortie = $this->createSortie($sortie, $em, $etatHelper);
 
-            $em->persist($sortie);
-            $em->flush();
-
-            //si on publie directement, alors on redirige vers cette page de publication au lieu de dupliquer le code
-            if ($sortieForm->get('publierMaintenant')->getData() === true) {
+            if ($saveandPublishAction) {
+                //si on publie directement, alors on redirige vers cette page de publication au lieu de dupliquer le code
                 return $this->redirectToRoute('sortie_publier', ['id' => $sortie->getId()]);
             }
-
 
             $this->addFlash('success', 'Vous venez de créée une sortie !');
             return $this->redirectToRoute('sortie_detail', ['id' => $sortie->getId()]);
@@ -176,11 +167,13 @@ class SortieController extends AbstractController
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            $em->persist($sortie);
-            $em->flush();
 
-            //si on publie directement, alors on redirige vers cette page de publication au lieu de dupliquer le code
-            if ($sortieForm->get('publierMaintenant')->getData() === true) {
+            $saveandPublishAction = $sortieForm->get('saveAndPublish')->isClicked();
+
+            $this->updateSortie($sortie, $em);
+
+            if ($saveandPublishAction) {
+                //si on publie directement, alors on redirige vers cette page de publication au lieu de dupliquer le code
                 return $this->redirectToRoute('sortie_publier', ['id' => $sortie->getId()]);
             }
 
@@ -222,7 +215,7 @@ class SortieController extends AbstractController
     /**
      * @Route("/{id}/publier", name="publier")
      */
-    public function publier(Sortie $sortie, EtatChangeHelper $etatHelper)
+    public function publier($id, Request $request, Sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $etatHelper)
     {
         //vérifie que c'est bien l'auteur (ou un admin) qui est en train de publier
         if ($this->getUser() !== $sortie->getOrganisateur() && !$this->isGranted("ROLE_ADMIN")) {
@@ -271,5 +264,42 @@ class SortieController extends AbstractController
             'sortie' => $sortie,
             'annulationSortieForm' => $annulationSortieForm->createView()
         ]);
+    }
+
+    /**
+     * @Route("/{id}/supprimer", name="supprimer")
+     */
+    public function supprimer(Sortie $sortie, EtatChangeHelper $etatHelper)
+    {
+        //@TODO
+    }
+
+    private function createSortie(Sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $stateHelper): Sortie
+    {
+        // donner l'état "créée" à cette sortie
+        $sortie->setEtat($stateHelper->getEtatByNom(EtatChangeHelper::ETAT_CREEE));
+
+        //on renseigne son auteur (le user actuel)
+        $u = $this->getUser();
+        if ($u == null) {
+            // parce que pour l'instant on ne se connecte pas au site avec un login
+            // donc je feinte
+            $u = $em->getRepository(Participant::class)->findOneBy(['email' => 'admin@admin.fr']);
+        }
+
+        $sortie->setOrganisateur($u);
+        $sortie->setCampus($u->getCampus());
+
+        $em->persist($sortie);
+        $em->flush();
+
+        return $sortie;
+    }
+
+    private function updateSortie(Sortie $sortie, EntityManagerInterface $em): Sortie
+    {
+        $em->persist($sortie);
+        $em->flush();
+        return $sortie;
     }
 }

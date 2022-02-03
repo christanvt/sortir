@@ -155,7 +155,7 @@ class EtatChangeHelper
 
     /**
      *
-     * Retourne true si la sortie peut être ouverte
+     * Retourne true si la sortie peut être ouverte/publié
      *
      * @param Sortie $sortie
      * @return bool

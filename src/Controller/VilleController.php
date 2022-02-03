@@ -17,12 +17,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class VilleController extends AbstractController
 {
     /**
-     * @Route("/", name="ville_index", methods={"GET"})
+     * @Route("/{page}", name="ville_index", methods={"GET"}, requirements={"page":"\d+"})
      */
-    public function index(VilleRepository $villeRepository): Response
+    public function index(VilleRepository $villeRepository, int $page = 1): Response
     {
+        $paginationVilles = $villeRepository->findPaginatedVilles($page);
         return $this->render('ville/index.html.twig', [
-            'villes' => $villeRepository->findAll(),
+            'villes' => $paginationVilles,
         ]);
     }
 

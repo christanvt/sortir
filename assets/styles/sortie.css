@@ -8,20 +8,12 @@ select.form-control-sm{
 }
 input.form-control-sm{
     display:inline-block;
-    margin-left: 10px;
+    margin-left: 5px;
     width: fit-content;
 }
 
 input.datepicker{
-    width:100px;
-    margin-left: 10px;
+    width:90px;
     text-align: center;
 }
 
-.sortie-pagination {
-    padding: 20px 0 0 0;
-}
-
-ul.pagination {
-    justify-content: center;
-}

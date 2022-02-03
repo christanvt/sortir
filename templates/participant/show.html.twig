@@ -79,8 +79,8 @@
 						mot de passe</button>
 				</a>
 			{% endif %}
-			<a href="{{ path('main_home') }}" title="accueil">
-				<button class="mx-3 px-4 py-2">Retour</button>
+			<a href="{{ app.request.headers.get('referer') }}" title="retour page précédente">
+				<button class="mx-3 px-4 py-2" type="button">Retour</button>
 			</a>
 		</div>
 		{% if is_granted('ROLE_ADMIN') %}

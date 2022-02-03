@@ -7,6 +7,10 @@
 	<div class="container">
 		<h1>Ville index</h1>
 
+		<div class="ville-pagination">
+			{{ knp_pagination_render(villes) }}
+		</div>
+
 		<table class="table">
 			<thead>
 				<tr>
@@ -34,6 +38,10 @@
 				{% endfor %}
 			</tbody>
 		</table>
+
+		<div class="ville-pagination">
+			{{ knp_pagination_render(villes) }}
+		</div>
 
 		<a href="{{ path('ville_new') }}">Create new</a>
 	</div>
