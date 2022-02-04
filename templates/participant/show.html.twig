@@ -64,13 +64,15 @@
 			{% if app.user.id == participant.id or is_granted('ROLE_ADMIN') %}
 				<a href="{{ path('participant_edit_photo', {'id': participant.id}) }}" title="éditer profil">
 					<button class="mx-3 px-4 py-2">Modifier
-						{% if is_granted('ROLE_ADMIN') %}l{% else %}m
-						{% endif %}a photo de profil</button>
+						{% if is_granted('ROLE_ADMIN') %}la{% else %}ma
+						{% endif %}
+						photo de profil</button>
 				</a>
 				<a href="{{ path('participant_edit', {'id': participant.id}) }}" title="éditer profil">
 					<button class="mx-3 px-4 py-2">Modifier
-						{% if is_granted('ROLE_ADMIN') %}l{% else %}m
-						{% endif %}es informations personnelles</button>
+						{% if is_granted('ROLE_ADMIN') %}les{% else %}mes
+						{% endif %}
+						informations personnelles</button>
 				</a>
 				<a href="{{ path('participant_edit_motpasse', {'id': participant.id}) }}" title="éditer profil">
 					<button class="mx-3 px-4 py-2">Modifier
