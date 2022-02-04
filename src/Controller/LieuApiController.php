@@ -45,6 +45,8 @@ class LieuApiController extends AbstractController
             $lieu = new Lieu();
             $lieu->setNom($lieuData["nom"]);
             $lieu->setRue($lieuData["rue"]);
+            $lieu->setLatitude($lieuData["latitude"]);
+            $lieu->setLongitude($lieuData["longitude"]);
             $lieu->setVille($ville);
             if($lieuData["codePostal"] != $ville->getCodePostal()){
                 $lieu->getVille()->setCodePostal($ville->getCodePostal());

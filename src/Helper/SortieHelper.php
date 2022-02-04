@@ -54,7 +54,7 @@ class SortieHelper
         //doit être en statut "créée" pour retourner true
         return ($sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_CREEE
             || $sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_OUVERTE)
-            && $sortie->isOrganisteur($user);
+            && $sortie->isOrganisteur($user) || $user->getAdministrateur();
     }
 
 }

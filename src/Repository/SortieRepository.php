@@ -69,100 +69,113 @@ class SortieRepository extends ServiceEntityRepository
         $closedState = $etatRepo->findOneBy(['libelle' => EtatChangeHelper::ETAT_CLOTUREE]);
         $canceledState = $etatRepo->findOneBy(['libelle' => EtatChangeHelper::ETAT_ANNULEE]);
         $archivedState = $etatRepo->findOneBy(['libelle' => EtatChangeHelper::ETAT_ARCHIVEE]);
+        $goneState = $etatRepo->findOneBy(['libelle' => EtatChangeHelper::ETAT_PASSEE]);
 
         //ajoute des clauses where par défaut, toujours présentes
         $qb->andWhere('(s.etat = :openState 
             OR s.etat = :canceledState
             OR s.etat = :closedState  
             OR (s.etat = :createdState AND s.organisateur = :user))
-            AND s.etat != :archivedState
         ')
             ->setParameter('openState', $openState)
             ->setParameter('closedState', $closedState)
             ->setParameter('createdState', $createdState)
             ->setParameter('canceledState', $canceledState)
-            ->setParameter('archivedState', $archivedState)
             ->setParameter('user', $user);
 
         //jointures toujours présentes, pour éviter que doctrine fasse 10000 requêtes
         $qb->leftJoin('s.participants', 'p')->addSelect('p')
-            ->leftJoin( 'p.inscritAuxSorties', 'i')->addSelect('i')
+            ->leftJoin('p.inscritAuxSorties', 'i')->addSelect('i')
             ->leftJoin('s.organisateur', 'o')->addSelect('o');
 
         //la plus proche dans le temps en premier
         $qb->orderBy('s.dateHeureDebut', 'ASC');
 
         //recherche par mot-clef, si applicable
-        if (!empty($searchData['keyword'])){
+        if (!empty($searchData['keyword'])) {
             $qb->andWhere('s.nom LIKE :kw')
-                ->setParameter('kw', '%'.$searchData['keyword'].'%');
+                ->setParameter('kw', '%' . $searchData['keyword'] . '%');
         }
 
         //filtre par campus, si applicable
-        if (!empty($searchData['campus'])){
+        if (!empty($searchData['campus'])) {
             $qb->andWhere('o.campus = :campus')
                 ->setParameter('campus', $searchData['campus']);
         }
 
         //filtre par date passé
-        if (!empty($searchData['gone'])){
+        if (!empty($searchData['gone'])) {
             $qb->andWhere('s.dateHeureDebut < :now')
                 ->setParameter('now', new \DateTime());
         }
 
         //filtre par date de début minimum
-        if (!empty($searchData['start_at_min_date'])){
+        if (!empty($searchData['start_at_min_date'])) {
             $qb->andWhere('s.dateHeureDebut >= :start_at_min_date')
                 ->setParameter('start_at_min_date', $searchData['start_at_min_date']);
         }
         //et date de début maximum
-        if (!empty($searchData['start_at_max_date'])){
+        if (!empty($searchData['start_at_max_date'])) {
             $qb->andWhere('s.dateHeureDebut <= :start_at_max_date')
                 ->setParameter('start_at_max_date', $searchData['start_at_max_date']);
         }
 
-        // crée un ensemble de condition OR entre parenthèses
-        // on y ajoute dynamiquement des WHERE plus loin
-        $checkBoxesOr = $qb->expr()->orX();
 
-        //récupère l'ids des sorties auxquelles je suis inscrit dans une autre requête
-        //ça nous donne un array contenant les ids, qui sera utile pour les IN ou NOT IN plus loin
-        $subQueryBuilder = $this->createQueryBuilder('s');
-        $subQueryBuilder
-            ->from(Participant::class, 'p')
-            ->select("DISTINCT(s.id)")
-            ->join('p.inscritAuxSorties', 'i')
-            ->andWhere('p.id = :userId')
-            ->setParameter("userId", $user->getId());
-        $result = $subQueryBuilder->getQuery()->getScalarResult();
-        $sortiesDuUser = array_column($result, "1");
-
-        //inclure les sorties auxquelles je suis inscrit
-        if(count($sortiesDuUser) > 0) {
-            if (!empty($searchData['subscribed_to'])) {
-                $checkBoxesOr->add($qb->expr()->in('i', $sortiesDuUser));
-            }
-            //inclure les sorties auxquelles je ne suis pas inscrit
-            if (!empty($searchData['not_subscribed_to'])) {
-                $checkBoxesOr->add($qb->expr()->notIn('i', $sortiesDuUser));
-            }
+        $i = !empty($searchData['subscribed_to']);
+        $ni = !empty($searchData['not_subscribed_to']);
+        $o = !empty($searchData['is_organizer']);
+        if ($i && $ni && $o) {
+            $qb->andWhere(':u1 MEMBER OF s.participants')
+                ->orWhere(':u2 NOT MEMBER OF s.participants')
+                ->orWhere('s.organisateur = :u3')
+                ->setParameter('u1', $user)
+                ->setParameter('u2', $user)
+                ->setParameter('u3', $user);
+        } elseif ($i && $ni) {
+            $qb->andWhere(':u1 MEMBER OF s.participants')
+                ->orWhere(':u2 NOT MEMBER OF s.participants')
+                ->setParameter('u1', $user)
+                ->setParameter('u2', $user);
+        } elseif ($ni && $o) {
+            $qb->andWhere(':u2 NOT MEMBER OF s.participants')
+                ->orWhere('s.organisateur = :u3')
+                ->setParameter('u2', $user)
+                ->setParameter('u3', $user);
+        } elseif ($i && $o) {
+            $qb->andWhere(':u1 MEMBER OF s.participants')
+                ->orWhere('s.organisateur = :u3')
+                ->setParameter('u1', $user)
+                ->setParameter('u3', $user);
+        } elseif ($i) {
+            $qb->andWhere(':u1 MEMBER OF s.participants AND s.etat != :archivedState');
+            $qb->setParameter('u1', $user);
+        } elseif ($ni) {
+            $qb->andWhere(':u2 NOT MEMBER OF s.participants AND s.etat != :archivedState');
+            $qb->setParameter('u2', $user);
+        } elseif ($o) {
+            $qb->andWhere('s.organisateur = :u3');
+            $qb->setParameter('u3', $user);
         }
-        //inclure les sorties dont je suis l'organisateur
-        if (!empty($searchData['is_organizer'])){
-            $checkBoxesOr->add($qb->expr()->eq('s.organisateur', $user->getId()));
+
+        //inclure les sorties passées
+        if (!empty($searchData['gone'])) {
+            $qb->orWhere('s.etat = :goneState');
+            $qb->setParameter('goneState', $goneState);
         }
 
-        //maintenant que nos clauses OR regroupées sont créées, on les ajoute à la requête dans un grand AND()
-        $qb->andWhere($checkBoxesOr);
+
+        $qb->andWhere('s.etat != :archivedState')
+            ->setParameter('archivedState', $archivedState);
 
 
-        $count = count($qb->getQuery()->getResult());
-
-        //on récupère les résultats, en fonction des filtres précédent
         $query = $qb->getQuery();
 
+        $pagination = $this->paginator->paginate($query, 1, $numPerPage+1);
+        if(count($pagination)<=$numPerPage )
+        {
+            $page = 1;
+        }
         $pagination = $this->paginator->paginate($query, $page, $numPerPage);
-
         return $pagination;
     }
 }
