@@ -33,18 +33,18 @@ class ParticipantHelper
      *
      * Retourne true si la sortie peut être ouverte
      *
-     * @param Participant $user
+     * @param UserInterface $user
      * @param Sortie $sortie
      * @return bool
      */
-    public function peutSinscrireASortie(Participant $user, Sortie $sortie): bool
+    public function peutSinscrireASortie(UserInterface $user, Sortie $sortie): bool
     {
         // la sortir doit être en statut "ouverte" et pas déjà inscrit
         return $sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_OUVERTE
             && !$sortie->isParticipant($user);
     }
 
-    public function peutSeDesinscrireASortie(Participant $user, Sortie $sortie): bool
+    public function peutSeDesinscrireASortie(UserInterface $user, Sortie $sortie): bool
     {
         // la sortir doit être en statut "ouverte" et déjà inscrit
         return $sortie->getEtat()->getLibelle() === EtatChangeHelper::ETAT_OUVERTE

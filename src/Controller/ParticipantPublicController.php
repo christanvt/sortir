@@ -9,6 +9,8 @@ use App\Helper\EtatChangeHelper;
 use App\Form\ParticipantPhotoType;
 use App\Form\ParticipantMotpasseType;
 use App\Form\ParticipantIdentifedType;
+use App\Helper\ParticipantHelper;
+use App\Helper\SortieHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ParticipantRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -160,15 +162,17 @@ class ParticipantPublicController extends AbstractController
      *
      * @Route("/sorties/{id}/participant/", name="participant_toggle")
      */
-    public function toggle(Sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $etatChangeHelper)
+    public function toggle(Sortie $sortie, EntityManagerInterface $em, EtatChangeHelper $etatChangeHelper, ParticipantHelper $userHelper)
     {
         $participantRepo = $em->getRepository(Participant::class);
 
         //la sortie doit être dans l'état ouverte pour qu'on puisse s'y inscrire
-        if ($sortie->getEtat()->getLibelle() !== EtatChangeHelper::ETAT_OUVERTE) {
+        if ( !$userHelper->peutSinscrireASortie($this->getUser(), $sortie)) {
             $this->addFlash("danger", "Cette sortie n'est pas ouverte aux inscriptions !");
             return $this->redirectToRoute('sortie_detail', ["id" => $sortie->getId()]);
         }
+
+        // @TODO tester que la sortie n'est pas cloturée
 
         //désincription si on trouve cette inscription
         //on la recherche dans la bdd du coup...
