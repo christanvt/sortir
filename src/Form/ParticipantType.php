@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Participant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,6 +19,7 @@ class ParticipantType extends AbstractType
             ->add('nom')
             ->add('telephone')
             ->add('email')
+            ->add('motpasse', PasswordType::class)
             ->add('administrateur')
             ->add('actif')
             ->add('campus');
