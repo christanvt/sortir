@@ -22,9 +22,9 @@
 				<div class="alert alert-warning text-center">Cette sortie est méga vieille</div>
 			{% elseif sortie.etat.libelle == 'ACTIVITE_EN_COURS' %}
 				<div class="alert alert-warning text-center">Cette sortie est en cours !</div>
-			{% elseif sortie.etat.libelle == 'CLOTUREE' and not sortie.isSubscribed(app.user) %}
+			{% elseif sortie.etat.libelle == 'CLOTUREE' and not sortie.isParticipant(app.user) %}
 				<div class="alert alert-warning text-center">Trop tard, les inscriptions sont fermées ! snif</div>
-			{% elseif sortie.etat.libelle == 'CLOTUREE' and  sortie.isSubscribed(app.user) %}
+			{% elseif sortie.etat.libelle == 'CLOTUREE' and  sortie.isParticipant(app.user) %}
 				<div class="alert alert-success text-center">Les inscriptions sont fermées mais vous êtes inscrit fiou !</div>
 			{% elseif sortie.etat.libelle == 'OUVERTE' %}
 				<div class="alert alert-success text-center">Les inscriptions sont ouvertes !</div>
@@ -84,7 +84,7 @@
 					{% if sortie.lieu.latitude is not null %}
 						{% set url = 'https://www.google.com/maps/search/'~ sortie.lieu.nom ~'+'~ sortie.lieu.ville.nom ~'\@'~ sortie.lieu.latitude ~','~ sortie.lieu.longitude   %}
 						<a href={{ url }} target="about_blank">
-							<i class="fas fa-map-marked-alt" style="width:70;">
+							<i class="fas fa-map-marked-alt" style="width:70px;">
 								Localiser la sortie
 							</i>
 						</a>
