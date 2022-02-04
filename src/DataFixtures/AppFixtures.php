@@ -324,6 +324,7 @@ class AppFixtures extends Fixture
     public function loadSorties(int $count): void
     {
         $faker = Faker\Factory::create('fr_FR');
+
         $allOganisateurs = $this->manager->getRepository(Participant::class)->findAll();
         $allLieux = $this->manager->getRepository(Lieu::class)->findAll();
         $allEtats = $this->manager->getRepository(Etat::class)->findAll();
